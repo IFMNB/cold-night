@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://b6kedv3b7p3bb"]
+
+[ext_resource type="Script" path="res://src/csharp/class/game/controller/HeightController.cs" id="1_s0j74"]
+[ext_resource type="Script" uid="uid://bauwd7n4cuisd" path="res://src/godotscript/class/common/node/Scene.gd" id="2_tdbrm"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sdqq3"]
+diffuse_mode = 1
+albedo_color = Color(0.70095825, 0.6165139, 0.56714314, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sdqq3"]
+
+[node name="Node3D" type="Node3D" unique_id=124636810]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=867579184]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.018870592, -0.7454998, -0.56049395)
+autosmooth = true
+use_collision = true
+size = Vector3(13.944336, 1, 9.463989)
+material = SubResource("StandardMaterial3D_sdqq3")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=2105433523]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.340344, 0)
+
+[node name="HeightController" type="Node" parent="RigidBody3D" unique_id=920156403 node_paths=PackedStringArray("Target")]
+script = ExtResource("1_s0j74")
+Target = NodePath("..")
+MaxRayLength = 344.0
+ExpectedHeight = 55.0
+MaxForce = 1233.0
+metadata/_custom_type_script = "uid://uhos1gwo8yqb"
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="RigidBody3D" unique_id=2061075088]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0010654926, 0)
+use_collision = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1400060657]
+shape = SubResource("BoxShape3D_sdqq3")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=705513264]
+transform = Transform3D(0.81598336, 0.17307407, 0.5515586, -0.21831216, 0.9757345, 0.016797297, -0.53526753, -0.13411821, 0.8339671, 1.0196002, 0.13193727, 2.4659863)
+fov = 98.087494
+
+[node name="Scene" type="Node" parent="." unique_id=245309283]
+script = ExtResource("2_tdbrm")
+metadata/_custom_type_script = "uid://bauwd7n4cuisd"
