@@ -2,3 +2,8 @@
 .godot/
 /android/
 *.uid
+*.blend
+*.raw
+*.sec
+*.gltf
+*.gtf

@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://dvuh2xcis8iv6"]
+
+[ext_resource type="Script" uid="uid://cecrp6ecl65qw" path="res://src/csharp/scripts/FramesInvormerNode.cs" id="1_ti1hs"]
+
+[node name="DevInfoControl" type="Control" unique_id=1519950161]
+layout_mode = 3
+anchor_left = 0.257
+anchor_top = 0.106000006
+anchor_right = 0.257
+anchor_bottom = 0.106000006
+offset_left = -296.064
+offset_top = -68.688
+offset_right = 294.936
+offset_bottom = 69.312
+
+[node name="TagLabel" type="Label" parent="." unique_id=1792829185]
+layout_mode = 0
+text = "Dev table"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1586718195]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 72.0
+offset_right = 288.0
+offset_bottom = 95.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=366696047]
+clip_contents = true
+layout_mode = 2
+
+[node name="AverageFPSText" type="Label" parent="HBoxContainer/VBoxContainer" unique_id=1929703499]
+layout_mode = 2
+text = "Average FPS :"
+
+[node name="text2" type="Label" parent="HBoxContainer/VBoxContainer" unique_id=1996426512]
+layout_mode = 2
+text = "Total Physics Frames :"
+
+[node name="text3" type="Label" parent="HBoxContainer/VBoxContainer" unique_id=1987293467]
+layout_mode = 2
+text = "Total Process Frames :"
+
+[node name="text4" type="Label" parent="HBoxContainer/VBoxContainer" unique_id=518137431]
+layout_mode = 2
+text = "Max FPS :"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer" unique_id=1926718555]
+clip_contents = true
+layout_mode = 2
+
+[node name="value" type="Label" parent="HBoxContainer/VBoxContainer2" unique_id=1337277312]
+layout_mode = 2
+text = "0"
+
+[node name="value2" type="Label" parent="HBoxContainer/VBoxContainer2" unique_id=540865333]
+layout_mode = 2
+text = "0"
+
+[node name="value3" type="Label" parent="HBoxContainer/VBoxContainer2" unique_id=570270085]
+layout_mode = 2
+text = "0"
+
+[node name="value4" type="Label" parent="HBoxContainer/VBoxContainer2" unique_id=754220795]
+layout_mode = 2
+text = "0"
+
+[node name="FINScript" type="Node" parent="." unique_id=1975659442 node_paths=PackedStringArray("AverageFPS", "TotalFramesPhysics", "TotalFramesProcess", "MaxFPS")]
+script = ExtResource("1_ti1hs")
+AverageFPS = NodePath("../HBoxContainer/VBoxContainer2/value")
+TotalFramesPhysics = NodePath("../HBoxContainer/VBoxContainer2/value2")
+TotalFramesProcess = NodePath("../HBoxContainer/VBoxContainer2/value3")
+MaxFPS = NodePath("../HBoxContainer/VBoxContainer2/value4")

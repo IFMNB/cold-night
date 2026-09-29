@@ -5,9 +5,10 @@ namespace ColdNight.src.game.physics;
 
 /// <summary>
 /// Объект, представляющий что-то схожее с объектами, у которых суть применять постоянный `VectorForce`
-///
+/// <para>
 /// Основная разница между ними в том, что этот объект дополнительно учитывает текущую скорость и
 /// реализует саму силу через `PD` калькулятор для консультации нормального ускорения
+/// </para>
 /// </summary>
 [GlobalClass] public partial class MovePController : PhysicsController, ICalculatedPD, IWireReceiver
 {

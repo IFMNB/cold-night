@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://drswjcfrj8j0t" path="res://src/csharp/class/common/node/value/StringNode.cs" id="5_h7nkx"]
 [ext_resource type="Script" uid="uid://dvgkg0w3fkxvp" path="res://src/csharp/class/common/node/inputs/InputMapDirection.cs" id="6_xq2a7"]
 [ext_resource type="Script" uid="uid://dhadh7jn5m420" path="res://src/csharp/class/common/node/value/wire/WireOut.cs" id="7_1pqxs"]
+[ext_resource type="PackedScene" uid="uid://curfi2ejy4nxl" path="res://models/maps/Complex.blend" id="8_pfvji"]
+[ext_resource type="PackedScene" uid="uid://dvuh2xcis8iv6" path="res://scenes/interface/dev_info_control.tscn" id="8_s8x0k"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sdqq3"]
 diffuse_mode = 1
@@ -53,7 +55,6 @@ metadata/_custom_type_script = "uid://be2c0dgporycx"
 
 [node name="InputMapBinding" type="Node" parent="RigidBody3D" unique_id=1841287082 node_paths=PackedStringArray("Binding")]
 script = ExtResource("4_qoait")
-Direction = Vector3(0, 0, 1)
 Binding = NodePath("BindingValue")
 metadata/_custom_type_script = "uid://dlni7ytax8mxn"
 
@@ -67,11 +68,17 @@ Output = NodePath("Output")
 Bindings = [NodePath("../InputMapBinding")]
 metadata/_custom_type_script = "uid://dvgkg0w3fkxvp"
 
-[node name="Output" type="Node" parent="RigidBody3D/InputMapDirection" unique_id=676627882 node_paths=PackedStringArray("Receivers")]
+[node name="Output" type="Node" parent="RigidBody3D/InputMapDirection" unique_id=768628392 node_paths=PackedStringArray("Receivers")]
 script = ExtResource("7_1pqxs")
 Receivers = [NodePath("../../MovePController/Input")]
 Value = Vector3(0, 0, 0)
+metadata/_custom_type_script = "uid://dhadh7jn5m420"
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=705513264]
 transform = Transform3D(0.81598336, 0.17307407, 0.5515586, -0.21831216, 0.9757345, 0.016797297, -0.53526753, -0.13411821, 0.8339671, 1.0196002, 0.13193727, 2.4659863)
 fov = 98.087494
+
+[node name="DevInfoControl" parent="Camera3D" unique_id=1519950161 instance=ExtResource("8_s8x0k")]
+
+[node name="Complex" parent="." unique_id=322615146 instance=ExtResource("8_pfvji")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.975707, 10.567865, -2.2422209)

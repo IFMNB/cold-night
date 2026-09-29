@@ -1,6 +1,7 @@
 using Godot;
+using ColdNight.src.common;
 
-namespace ColdNight.src.common;
+namespace ColdNight.src.game.input;
 
 /// <summary>
 /// Нода, реализующая подписку на определённый биндинг в Input Map.
@@ -15,7 +16,7 @@ namespace ColdNight.src.common;
 /// Значение отслеживаемого действия может быть изменено во время работы
 /// ноды. При изменении биндинга испускается <see cref="BindingChangedEventHandler"/>.
 /// </para>
-[GlobalClass, Tool]
+[GlobalClass] // поставить Tool когда пофиксят #96306
 public partial class InputMapBinding : Node, ISwitchable
 {
     /// <summary>

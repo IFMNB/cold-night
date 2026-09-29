@@ -1,7 +1,8 @@
 using Godot;
 using Godot.Collections;
+using ColdNight.src.common;
 
-namespace ColdNight.src.common;
+namespace ColdNight.src.game.input;
 
 /// <summary>
 /// Нода, объединяющая направления от нескольких <see cref="InputMapBinding"/>
@@ -19,7 +20,7 @@ namespace ColdNight.src.common;
 /// и передаётся в <see cref="Output"/>.
 /// </para>
 /// </summary>
-[GlobalClass, Tool]
+[GlobalClass] // поставить Tool когда починят #96306
 public partial class InputMapDirection : Node, ISwitchable, IWireSource
 {
     /// <summary>
