@@ -9,33 +9,61 @@ namespace ColdNight.src.game.physics;
 /// Основная разница между ними в том, что этот объект дополнительно учитывает текущую скорость и
 /// реализует саму силу через `PD` калькулятор для консультации нормального ускорения
 /// </summary>
-[GlobalClass] public partial class MovePController : PhysicsController, ICalculatedPD
+[GlobalClass] public partial class MovePController : PhysicsController, ICalculatedPD, IWireReceiver
 {
     [Export] public PDCalculator Calculator {get; set;} = new();
+
+    [Export] public WireIn? Input {get;set;}
     
     /// <summary>
     /// У этого контроллера направлением движения выступает этот вектор. Не важно, нормализован он или
-    /// нет, контроллер всегда нормализует его самостоятельно
+    /// нет, контроллер всегда нормализует его самостоятельно и будет использовать релевантное поле
+    /// <see cref="NormalizedDirection"/>
     /// </summary>
     [Export] public Vector3 Direction {get => _direction;set
         {
             _direction = value;
-            _normalized_direction = value.Normalized();
+            NormalizedDirection = value.Normalized();
         }
     }
+
+    /// <summary>
+    /// Нормализованное направление для контроллера, определяющее куда он сейчас будет двигаться
+    /// 
+    /// Контроллер сам устанавливает его
+    /// </summary>
+    public Vector3 NormalizedDirection {get; protected set;} = Vector3.Zero;
+    protected virtual float TargetSpeed => MaxForce;
 
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
-        
-        if (IsInstanceValid(Target))
-            if (Target!.IsInsideTree())
-            {
-                var linear_cur = Target!.LinearVelocity.Dot(_normalized_direction);
-                Target!.ApplyCentralForce(Direction * Calculator.CalculateForce(MaxForce, linear_cur, delta));
-            }
+
+        if (Enabled)
+            if (IsInstanceValid(Target))
+                if (Target!.IsInsideTree())
+                {
+                    Active = true;
+                    var linear_cur = Target!.LinearVelocity.Dot(NormalizedDirection);
+                    var force = NormalizedDirection * Calculator.CalculateForce(TargetSpeed, linear_cur, delta);
+                    if (force.Length() > MaxForce)
+                        force = force.Normalized() * MaxForce;
+                        
+                    Target!.ApplyCentralForce(Inverse ? -force : force);
+                    return;
+                }
+
+        Active = false;
     }
 
+    public override void _Process(double delta)
+    {        
+        base._Process(delta);
+
+        if (Input is not null)
+            if (VariantExtension.TryApply<Vector3>((Variant)Direction, Input.Value, Input.Mode, out var result))
+                Direction = result;
+        }
+
     private Vector3 _direction = Vector3.Zero;
-    private Vector3 _normalized_direction = Vector3.Zero;
 }

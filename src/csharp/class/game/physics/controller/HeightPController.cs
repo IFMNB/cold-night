@@ -81,6 +81,13 @@ namespace ColdNight.src.game.physics;
         if (Enabled)
             if (TryGetTarget(out var target))
                 if (target!.IsInsideTree())
-                    target!.ApplyCentralForce((UseWorldUp ? Vector3.Up : target.GlobalBasis.Y.Normalized()) * GetForce(delta));
+                {
+                    Active = true;
+                    var force = (UseWorldUp ? Vector3.Up : target.GlobalBasis.Y.Normalized()) * GetForce(delta);
+                    target!.ApplyCentralForce(Inverse ? -force : force);
+                    return;
+                }
+
+        Active = false;
     }
 }

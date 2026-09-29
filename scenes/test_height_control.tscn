@@ -1,7 +1,12 @@
 [gd_scene format=3 uid="uid://b6kedv3b7p3bb"]
 
-[ext_resource type="Script" path="res://src/csharp/class/game/controller/HeightController.cs" id="1_s0j74"]
-[ext_resource type="Script" uid="uid://bauwd7n4cuisd" path="res://src/godotscript/class/common/node/Scene.gd" id="2_tdbrm"]
+[ext_resource type="Script" uid="uid://dc4nyhbgx3vlt" path="res://src/csharp/class/game/physics/controller/HeightPController.cs" id="1_s8x0k"]
+[ext_resource type="Script" uid="uid://cqnlfn2psqsxu" path="res://src/csharp/class/game/physics/controller/MovePController.cs" id="2_d7xyu"]
+[ext_resource type="Script" uid="uid://be2c0dgporycx" path="res://src/csharp/class/common/node/value/wire/WireIn.cs" id="3_aniyf"]
+[ext_resource type="Script" uid="uid://dlni7ytax8mxn" path="res://src/csharp/class/common/node/inputs/InputMapBinding.cs" id="4_qoait"]
+[ext_resource type="Script" uid="uid://drswjcfrj8j0t" path="res://src/csharp/class/common/node/value/StringNode.cs" id="5_h7nkx"]
+[ext_resource type="Script" uid="uid://dvgkg0w3fkxvp" path="res://src/csharp/class/common/node/inputs/InputMapDirection.cs" id="6_xq2a7"]
+[ext_resource type="Script" uid="uid://dhadh7jn5m420" path="res://src/csharp/class/common/node/value/wire/WireOut.cs" id="7_1pqxs"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sdqq3"]
 diffuse_mode = 1
@@ -21,14 +26,6 @@ material = SubResource("StandardMaterial3D_sdqq3")
 [node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=2105433523]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.340344, 0)
 
-[node name="HeightController" type="Node" parent="RigidBody3D" unique_id=920156403 node_paths=PackedStringArray("Target")]
-script = ExtResource("1_s0j74")
-Target = NodePath("..")
-MaxRayLength = 344.0
-ExpectedHeight = 55.0
-MaxForce = 1233.0
-metadata/_custom_type_script = "uid://uhos1gwo8yqb"
-
 [node name="CSGBox3D2" type="CSGBox3D" parent="RigidBody3D" unique_id=2061075088]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0010654926, 0)
 use_collision = true
@@ -36,10 +33,45 @@ use_collision = true
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1400060657]
 shape = SubResource("BoxShape3D_sdqq3")
 
+[node name="HeightPController" type="Node" parent="RigidBody3D" unique_id=1729536130 node_paths=PackedStringArray("Target")]
+script = ExtResource("1_s8x0k")
+ExpectedHeight = 2.0
+Target = NodePath("..")
+metadata/_custom_type_script = "uid://dc4nyhbgx3vlt"
+
+[node name="MovePController" type="Node" parent="RigidBody3D" unique_id=1109064999 node_paths=PackedStringArray("Input", "Target")]
+script = ExtResource("2_d7xyu")
+Input = NodePath("Input")
+Target = NodePath("..")
+MaxForce = 1.0
+metadata/_custom_type_script = "uid://cqnlfn2psqsxu"
+
+[node name="Input" type="Node" parent="RigidBody3D/MovePController" unique_id=459380267]
+script = ExtResource("3_aniyf")
+Value = Vector3(0, 0, 0)
+metadata/_custom_type_script = "uid://be2c0dgporycx"
+
+[node name="InputMapBinding" type="Node" parent="RigidBody3D" unique_id=1841287082 node_paths=PackedStringArray("Binding")]
+script = ExtResource("4_qoait")
+Direction = Vector3(0, 0, 1)
+Binding = NodePath("BindingValue")
+metadata/_custom_type_script = "uid://dlni7ytax8mxn"
+
+[node name="BindingValue" type="Node" parent="RigidBody3D/InputMapBinding" unique_id=2098163527]
+script = ExtResource("5_h7nkx")
+Value = "move_front"
+
+[node name="InputMapDirection" type="Node" parent="RigidBody3D" unique_id=1932360859 node_paths=PackedStringArray("Output", "Bindings")]
+script = ExtResource("6_xq2a7")
+Output = NodePath("Output")
+Bindings = [NodePath("../InputMapBinding")]
+metadata/_custom_type_script = "uid://dvgkg0w3fkxvp"
+
+[node name="Output" type="Node" parent="RigidBody3D/InputMapDirection" unique_id=676627882 node_paths=PackedStringArray("Receivers")]
+script = ExtResource("7_1pqxs")
+Receivers = [NodePath("../../MovePController/Input")]
+Value = Vector3(0, 0, 0)
+
 [node name="Camera3D" type="Camera3D" parent="." unique_id=705513264]
 transform = Transform3D(0.81598336, 0.17307407, 0.5515586, -0.21831216, 0.9757345, 0.016797297, -0.53526753, -0.13411821, 0.8339671, 1.0196002, 0.13193727, 2.4659863)
 fov = 98.087494
-
-[node name="Scene" type="Node" parent="." unique_id=245309283]
-script = ExtResource("2_tdbrm")
-metadata/_custom_type_script = "uid://bauwd7n4cuisd"
