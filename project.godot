@@ -26,7 +26,11 @@ project/assembly_name="Cold Night"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/csharp_gdextension_bindgen/plugin.cfg")
+enabled=PackedStringArray()
+
+[global]
+
+steam_app_id="0"
 
 [input]
 

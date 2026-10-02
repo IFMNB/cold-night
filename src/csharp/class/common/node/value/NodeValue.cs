@@ -1,6 +1,6 @@
 using Godot;
 
-namespace ColdNight.src.common;
+namespace ColdNight.src.common.value;
 
 [GlobalClass] public partial class NodeValue : ValueNode<Node>
 {

@@ -1,7 +1,7 @@
 using Godot;
-using ColdNight.src.common;
+using ColdNight.src.common.value;
 
-namespace ColdNight.src.game.input;
+namespace ColdNight.src.common.input;
 
 /// <summary>
 /// Нода, реализующая подписку на определённый биндинг в Input Map.
@@ -217,7 +217,7 @@ public partial class InputMapBinding : Node, ISwitchable
         }
     }
 
-    public override void _Input(InputEvent @event)
+    public override void _UnhandledInput(InputEvent @event)
     {
         #if DEBUG
         if (Engine.IsEditorHint())

@@ -1,0 +1,11 @@
+{
+    "luau-lsp.bytecode.vectorLib": "vector",
+    "luau-lsp.bytecode.vectorType": "vector",
+    "luau-lsp.analyzeLuaFiles": false,
+    "luau-lsp.platform.type": "standard",
+    "luau-lsp.sourcemap.useVSCodeWatcher": true,
+    "luau-lsp.fflags.enableNewSolver": true,
+    "luau-lsp.types.definitionFiles": {
+        "game": "src/luau/game.d.luau"
+    }
+}

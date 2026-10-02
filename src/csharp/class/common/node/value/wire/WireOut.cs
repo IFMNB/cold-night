@@ -1,6 +1,8 @@
-using ColdNight.src.common;
+using ColdNight.src.common.value;
 using Godot;
 using Godot.Collections;
+
+namespace ColdNight.src.common;
 
 /// <summary>
 /// Объект, представляющий исходящий канал значения.

@@ -1,8 +1,7 @@
 using Godot;
 using Godot.Collections;
-using ColdNight.src.common;
 
-namespace ColdNight.src.game.input;
+namespace ColdNight.src.common.input;
 
 /// <summary>
 /// Нода, объединяющая направления от нескольких <see cref="InputMapBinding"/>

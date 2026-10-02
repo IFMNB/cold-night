@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Godot;
 
-namespace ColdNight.src.common;
+namespace ColdNight.src.common.value;
 
 /// <summary>
 /// Нода, использующаяся только в качестве хранителя какого-либо значения

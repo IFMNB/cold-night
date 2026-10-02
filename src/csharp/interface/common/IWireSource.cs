@@ -1,3 +1,4 @@
+using ColdNight.src.common;
 using Godot;
 
 namespace ColdNight.src;
