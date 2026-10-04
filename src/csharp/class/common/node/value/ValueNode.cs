@@ -5,61 +5,73 @@ using Godot;
 namespace ColdNight.src.common.value;
 
 /// <summary>
-/// Нода, использующаяся только в качестве хранителя какого-либо значения
+/// Нода, использующаяся только в качестве хранителя какого-либо значения.
 /// </summary>
-/// <typeparam name="T">Любой Godot совместимый объект</typeparam>
-public abstract partial class ValueNode <T> : Node, ISwitchable
+[GlobalClass]
+public partial class ValueNode : Node, ISwitchable
 {
     [Export] public bool Enabled {get;set;} = true;
 
     [Export] public bool Releseable {get;set;} = true;
-    
-    /// <summary>
-    /// Хранимое объектом значение
-    /// </summary>
-    public virtual T? Value {get => _value; set
-        {
-            var old = _value;
 
-            if (EqualityComparer<T>.Default.Equals(value, old))
+    
+
+    /// <summary>
+    /// Хранимое объектом значение.
+    /// </summary>
+    [Export] public Variant Value
+    {
+        get => RealValue;
+        set
+        {
+            var old = RealValue;
+
+            if (EqualityComparer<Variant>.Default.Equals(value, old))
                 return;
 
-            _value = value;
+            RealValue = value;
+            PreviousValue = old;
 
             if (!Enabled)
                 return;
-            
-            ValueChanged?.Invoke(value, old);
 
-            if (old is null)
-                ValueNew?.Invoke(value, old);
+            EmitSignal(SignalName.ValueChanged, value, old);
 
-            if (value is null)
-                ValueRemoved?.Invoke(value, old);
+            if (VariantExtension.IsNull(old))
+                EmitSignal(SignalName.ValueNew, value, old);
 
-            if (value is not null)
-                ValueAvailable?.Invoke(value, old);
+            if (VariantExtension.IsNull(value))
+                EmitSignal(SignalName.ValueRemoved, value, old);
+
+            if (!VariantExtension.IsNull(value))
+                EmitSignal(SignalName.ValueAvailable, value, old);
         }
     }
 
+    [Export] public Variant PreviousValue {get => RealPreviousValue; protected set => RealPreviousValue = value;}
+
+    protected virtual Variant RealValue {get;set;}
+    protected virtual Variant RealPreviousValue {get;set;}
+
     /// <summary>
-    /// Уведомление о операциях, при которых значение существует в любом случае
-    /// 
-    /// Например, это объединение ValueNew и ValueChanged с условием что Value is not null
+    /// Операция, при которой значение существует в любом случае.
     /// </summary>
-    public event Action<T?, T?>? ValueAvailable;
+    [Signal] public delegate void ValueAvailableEventHandler(Variant value, Variant old);
+
     /// <summary>
-    /// Уведомление о любых операциях со значением
+    /// Любое изменение значения.
     /// </summary>
-    public event Action<T?, T?>? ValueChanged;
+    [Signal] public delegate void ValueChangedEventHandler(Variant value, Variant old);
+
     /// <summary>
-    /// Когда Value был null, но затем стал чем-то
+    /// Значение было null, но стало чем-либо.
     /// </summary>
-    public event Action<T?, T?>? ValueNew;
+    [Signal] public delegate void ValueNewEventHandler(Variant value, Variant old);
+
     /// <summary>
-    /// Когда Value стал null
+    /// Значение стало null.
     /// </summary>
-    public event Action<T?, T?>? ValueRemoved;
+    [Signal] public delegate void ValueRemovedEventHandler(Variant value, Variant old);
 
     public override void _Notification(int what)
     {
@@ -69,13 +81,12 @@ public abstract partial class ValueNode <T> : Node, ISwitchable
             if (!Releseable && GetParent() is not null)
             {
                 CancelFree();
-                
-                #if DEBUG 
-                GD.PushWarning($"This node cannot be freed, try freeing the parent node \n{GetPath().ToString()}");
-                #endif
-            }
-                CancelFree();        
-    }
 
-    private T? _value;
+#if DEBUG
+                GD.PushWarning(
+                    $"This node cannot be freed, try freeing the parent node\n{GetPath()}"
+                );
+#endif
+            }
+    }
 }

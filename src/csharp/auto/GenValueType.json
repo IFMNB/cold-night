@@ -1,0 +1,25 @@
+[
+    "System.Boolean",
+    "System.Int64",
+    "System.Double",
+    "System.String",
+
+    "Godot.StringName",
+    "Godot.NodePath",
+
+    "Godot.Vector2",
+    "Godot.Vector2I",
+    "Godot.Rect2",
+    "Godot.Rect2I",
+
+    "Godot.Vector3",
+    "Godot.Vector3I",
+    "Godot.Vector4",
+    "Godot.Vector4I",
+
+    "Godot.Transform2D",
+    "Godot.Transform3D",
+    "Godot.Color",
+    "Godot.Rid"
+
+]

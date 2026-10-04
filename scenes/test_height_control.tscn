@@ -1,22 +1,26 @@
 [gd_scene format=3 uid="uid://b6kedv3b7p3bb"]
 
-[ext_resource type="Script" uid="uid://dc4nyhbgx3vlt" path="res://src/csharp/class/game/physics/controller/HeightPController.cs" id="1_s8x0k"]
-[ext_resource type="Script" uid="uid://cqnlfn2psqsxu" path="res://src/csharp/class/game/physics/controller/MovePController.cs" id="2_d7xyu"]
+[ext_resource type="Script" uid="uid://yyjr02blel5r" path="res://src/csharp/scripts/InputMouseToWindow.cs" id="1_8t18l"]
+[ext_resource type="Script" uid="uid://bdl6n5mdso3gi" path="res://src/csharp/class/common/hooks/gen/writer/Node3DVector3Writer.cs" id="2_u5khp"]
 [ext_resource type="Script" uid="uid://be2c0dgporycx" path="res://src/csharp/class/common/node/value/wire/WireIn.cs" id="3_aniyf"]
 [ext_resource type="Script" uid="uid://dlni7ytax8mxn" path="res://src/csharp/class/common/node/inputs/InputMapBinding.cs" id="4_qoait"]
-[ext_resource type="Script" uid="uid://drswjcfrj8j0t" path="res://src/csharp/class/common/node/value/StringNode.cs" id="5_h7nkx"]
 [ext_resource type="Script" uid="uid://dvgkg0w3fkxvp" path="res://src/csharp/class/common/node/inputs/InputMapDirection.cs" id="6_xq2a7"]
 [ext_resource type="Script" uid="uid://dhadh7jn5m420" path="res://src/csharp/class/common/node/value/wire/WireOut.cs" id="7_1pqxs"]
+[ext_resource type="Script" uid="uid://cc14wxud4miuk" path="res://src/csharp/class/game/physics/controller/universal/OrientationController.cs" id="8_d7xyu"]
 [ext_resource type="PackedScene" uid="uid://curfi2ejy4nxl" path="res://models/maps/Complex.blend" id="8_pfvji"]
+[ext_resource type="Script" uid="uid://bapbsu6147i5k" path="res://src/csharp/class/game/physics/controller/universal/MoveController.cs" id="8_qoait"]
 [ext_resource type="PackedScene" uid="uid://dvuh2xcis8iv6" path="res://scenes/interface/dev_info_control.tscn" id="8_s8x0k"]
+[ext_resource type="Script" uid="uid://bymd4n7lw7wac" path="res://src/csharp/class/game/physics/controller/universal/OrientationLimitController.cs" id="9_aniyf"]
+[ext_resource type="Script" uid="uid://ntwod3aqoo3c" path="res://src/csharp/class/common/node/inputs/InputPointerMotion.cs" id="11_qoait"]
+[ext_resource type="Script" uid="uid://8ff3heuw3ufw" path="res://src/csharp/class/game/physics/controller/universal/DamperController.cs" id="13_h7nkx"]
+[ext_resource type="PackedScene" uid="uid://b1ktkqq8vid3d" path="res://models/template/swat/SWAT+Operator+CGTrader.blend" id="14_xq2a7"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sdqq3"]
 diffuse_mode = 1
 albedo_color = Color(0.70095825, 0.6165139, 0.56714314, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_sdqq3"]
-
 [node name="Node3D" type="Node3D" unique_id=124636810]
+script = ExtResource("1_8t18l")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=867579184]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.018870592, -0.7454998, -0.56049395)
@@ -25,60 +29,110 @@ use_collision = true
 size = Vector3(13.944336, 1, 9.463989)
 material = SubResource("StandardMaterial3D_sdqq3")
 
-[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=2105433523]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.340344, 0)
+[node name="Complex" parent="." unique_id=322615146 instance=ExtResource("8_pfvji")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.975707, 10.567865, -2.2422209)
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="RigidBody3D" unique_id=2061075088]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0010654926, 0)
-use_collision = true
+[node name="SWAT+Operator+CGTrader" parent="." unique_id=2078975433 instance=ExtResource("14_xq2a7")]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1400060657]
-shape = SubResource("BoxShape3D_sdqq3")
+[node name="Camera3D" type="Camera3D" parent="SWAT+Operator+CGTrader" unique_id=353379137]
+transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, -0.025442004, 1.7002647, 0.11002827)
 
-[node name="HeightPController" type="Node" parent="RigidBody3D" unique_id=1729536130 node_paths=PackedStringArray("Target")]
-script = ExtResource("1_s8x0k")
-ExpectedHeight = 2.0
+[node name="Node3DVector3Writer" type="Node" parent="SWAT+Operator+CGTrader/Camera3D" unique_id=1572263076 node_paths=PackedStringArray("Input", "Target")]
+script = ExtResource("2_u5khp")
+PropertyWrite = 5
+Enabled = false
+Mode = 1
+Input = NodePath("WireIn")
 Target = NodePath("..")
-metadata/_custom_type_script = "uid://dc4nyhbgx3vlt"
+metadata/_custom_type_script = "uid://bdl6n5mdso3gi"
 
-[node name="MovePController" type="Node" parent="RigidBody3D" unique_id=1109064999 node_paths=PackedStringArray("Input", "Target")]
-script = ExtResource("2_d7xyu")
-Input = NodePath("Input")
-Target = NodePath("..")
-MaxForce = 1.0
-metadata/_custom_type_script = "uid://cqnlfn2psqsxu"
-
-[node name="Input" type="Node" parent="RigidBody3D/MovePController" unique_id=459380267]
+[node name="WireIn" type="Node" parent="SWAT+Operator+CGTrader/Camera3D/Node3DVector3Writer" unique_id=696895856]
 script = ExtResource("3_aniyf")
+Mode = 0
 Value = Vector3(0, 0, 0)
 metadata/_custom_type_script = "uid://be2c0dgporycx"
 
-[node name="InputMapBinding" type="Node" parent="RigidBody3D" unique_id=1841287082 node_paths=PackedStringArray("Binding")]
-script = ExtResource("4_qoait")
-Binding = NodePath("BindingValue")
-metadata/_custom_type_script = "uid://dlni7ytax8mxn"
+[node name="DevInfoControl" parent="SWAT+Operator+CGTrader/Camera3D" unique_id=1519950161 instance=ExtResource("8_s8x0k")]
 
-[node name="BindingValue" type="Node" parent="RigidBody3D/InputMapBinding" unique_id=2098163527]
-script = ExtResource("5_h7nkx")
-Value = "move_front"
+[node name="OrientationController" type="Node" parent="SWAT+Operator+CGTrader/Camera3D" unique_id=316575484 node_paths=PackedStringArray("Input", "Target")]
+script = ExtResource("8_d7xyu")
+Input = NodePath("Orient")
+Target = NodePath("../..")
+metadata/_custom_type_script = "uid://cc14wxud4miuk"
 
-[node name="InputMapDirection" type="Node" parent="RigidBody3D" unique_id=1932360859 node_paths=PackedStringArray("Output", "Bindings")]
+[node name="Orient" type="Node" parent="SWAT+Operator+CGTrader/Camera3D/OrientationController" unique_id=981460153]
+script = ExtResource("3_aniyf")
+metadata/_custom_type_script = "uid://be2c0dgporycx"
+
+[node name="OrientationLimitController" type="Node" parent="SWAT+Operator+CGTrader/Camera3D" unique_id=1101657811 node_paths=PackedStringArray("Target")]
+script = ExtResource("9_aniyf")
+LimitYaw = false
+YawLimit = Vector2(-60, 60)
+PitchLimit = Vector2(-60, 60)
+HardLimit = Vector2(-20, 20)
+Target = NodePath("..")
+metadata/_custom_type_script = "uid://bymd4n7lw7wac"
+
+[node name="MoveController" type="Node" parent="SWAT+Operator+CGTrader/Camera3D" unique_id=806873920 node_paths=PackedStringArray("Input", "Target")]
+script = ExtResource("8_qoait")
+Input = NodePath("move_input")
+Target = NodePath("../..")
+MaxForce = 25.0
+metadata/_custom_type_script = "uid://bapbsu6147i5k"
+
+[node name="move_input" type="Node" parent="SWAT+Operator+CGTrader/Camera3D/MoveController" unique_id=2009298761]
+script = ExtResource("3_aniyf")
+metadata/_custom_type_script = "uid://be2c0dgporycx"
+
+[node name="Inputs" type="Node" parent="SWAT+Operator+CGTrader/Camera3D" unique_id=970762024]
+
+[node name="MoveDirections" type="Node" parent="SWAT+Operator+CGTrader/Camera3D/Inputs" unique_id=129609788 node_paths=PackedStringArray("Output", "Bindings")]
 script = ExtResource("6_xq2a7")
-Output = NodePath("Output")
-Bindings = [NodePath("../InputMapBinding")]
+Output = NodePath("MoveOut")
+Bindings = [NodePath("forward"), NodePath("left"), NodePath("right"), NodePath("back")]
 metadata/_custom_type_script = "uid://dvgkg0w3fkxvp"
 
-[node name="Output" type="Node" parent="RigidBody3D/InputMapDirection" unique_id=768628392 node_paths=PackedStringArray("Receivers")]
+[node name="MoveOut" type="Node" parent="SWAT+Operator+CGTrader/Camera3D/Inputs/MoveDirections" unique_id=1496597501 node_paths=PackedStringArray("Receivers")]
 script = ExtResource("7_1pqxs")
-Receivers = [NodePath("../../MovePController/Input")]
-Value = Vector3(0, 0, 0)
+Receivers = [NodePath("../../../MoveController/move_input")]
 metadata/_custom_type_script = "uid://dhadh7jn5m420"
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=705513264]
-transform = Transform3D(0.81598336, 0.17307407, 0.5515586, -0.21831216, 0.9757345, 0.016797297, -0.53526753, -0.13411821, 0.8339671, 1.0196002, 0.13193727, 2.4659863)
-fov = 98.087494
+[node name="forward" type="Node" parent="SWAT+Operator+CGTrader/Camera3D/Inputs/MoveDirections" unique_id=1235875865]
+script = ExtResource("4_qoait")
+Direction = Vector3(0, 0, 1)
+Actions = Array[String](["move_forward"])
+metadata/_custom_type_script = "uid://dlni7ytax8mxn"
 
-[node name="DevInfoControl" parent="Camera3D" unique_id=1519950161 instance=ExtResource("8_s8x0k")]
+[node name="left" type="Node" parent="SWAT+Operator+CGTrader/Camera3D/Inputs/MoveDirections" unique_id=2079513253]
+script = ExtResource("4_qoait")
+Direction = Vector3(1, 0, 0)
+Actions = Array[String](["move_left"])
+metadata/_custom_type_script = "uid://dlni7ytax8mxn"
 
-[node name="Complex" parent="." unique_id=322615146 instance=ExtResource("8_pfvji")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.975707, 10.567865, -2.2422209)
+[node name="right" type="Node" parent="SWAT+Operator+CGTrader/Camera3D/Inputs/MoveDirections" unique_id=1211282699]
+script = ExtResource("4_qoait")
+Direction = Vector3(-1, 0, 0)
+Actions = Array[String](["move_right"])
+metadata/_custom_type_script = "uid://dlni7ytax8mxn"
+
+[node name="back" type="Node" parent="SWAT+Operator+CGTrader/Camera3D/Inputs/MoveDirections" unique_id=1167476845]
+script = ExtResource("4_qoait")
+Direction = Vector3(0, 0, -1)
+Actions = Array[String](["move_back"])
+metadata/_custom_type_script = "uid://dlni7ytax8mxn"
+
+[node name="DamperController" type="Node" parent="SWAT+Operator+CGTrader/Camera3D" unique_id=8892611 node_paths=PackedStringArray("Target")]
+script = ExtResource("13_h7nkx")
+Target = NodePath("../..")
+metadata/_custom_type_script = "uid://8ff3heuw3ufw"
+
+[node name="InputPointerMotion" type="Node" parent="SWAT+Operator+CGTrader/Camera3D" unique_id=807205004 node_paths=PackedStringArray("Output")]
+script = ExtResource("11_qoait")
+Output = NodePath("WireOut")
+metadata/_custom_type_script = "uid://ntwod3aqoo3c"
+
+[node name="WireOut" type="Node" parent="SWAT+Operator+CGTrader/Camera3D/InputPointerMotion" unique_id=600904043 node_paths=PackedStringArray("Receivers")]
+script = ExtResource("7_1pqxs")
+Receivers = [NodePath("../../Node3DVector3Writer/WireIn"), NodePath("../../OrientationController/Orient")]
+Value = Vector3(0, 0, 0)
+metadata/_custom_type_script = "uid://dhadh7jn5m420"

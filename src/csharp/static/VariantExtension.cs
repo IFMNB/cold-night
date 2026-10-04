@@ -19,6 +19,32 @@ public static class VariantExtension
     public static bool IsNull (Variant value) => value.VariantType == Variant.Type.Nil;
     public static bool TypeEqual (Variant left, Variant right) => left.VariantType == right.VariantType;
 
+    public static bool ValueEqual (Variant left, Variant right)
+    {
+        if (left.VariantType != right.VariantType) return false;
+
+        switch (left.VariantType)
+        {
+            case Variant.Type.Int: return left.AsInt64() == right.AsInt64();
+            case Variant.Type.Float: return left.AsDouble() == right.AsDouble();
+            case Variant.Type.String: return left.AsString() == right.AsString();
+            case Variant.Type.Vector2: return left.AsVector2() == right.AsVector2();
+            case Variant.Type.Vector3: return left.AsVector3() == right.AsVector3();
+            case Variant.Type.Vector4: return left.AsVector4() == right.AsVector4();
+            case Variant.Type.Color: return left.AsColor() == right.AsColor();
+            case Variant.Type.Quaternion: return left.AsQuaternion() == right.AsQuaternion();
+            case Variant.Type.Basis: return left.AsBasis() == right.AsBasis();
+            case Variant.Type.Transform2D: return left.AsTransform2D() == right.AsTransform2D();
+            case Variant.Type.Transform3D: return left.AsTransform3D() == right.AsTransform3D();
+            case Variant.Type.Projection: return left.AsProjection() == right.AsProjection();
+            default:
+                #if DEBUG
+                    GD.PushWarning ($"cannot find needle operation to do work with {left.VariantType} , {right.VariantType}");
+                #endif
+                return false;
+        }
+    }
+
     public static bool TryApply(Variant left, Variant right, OperationMode mode, out Variant result)
     {
         result = default;

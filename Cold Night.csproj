@@ -1,14 +1,54 @@
 <Project Sdk="Godot.NET.Sdk/4.7.2">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
-    <EnableDynamicLoading>true</EnableDynamicLoading>
-    <Nullable>enable</Nullable>
-    <RootNamespace>ColdNight</RootNamespace>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <Nullable>enable</Nullable>
+        <RootNamespace>ColdNight</RootNamespace>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NuLua" Version="0.1.0" />
-    <PackageReference Include="NuLua.Luau" Version="0.1.0" />
+        <PackageReference Include="NuLua" Version="0.1.0" />
+        <PackageReference Include="NuLua.Luau" Version="0.1.0" />
   </ItemGroup>
+
+
+    <ItemGroup>
+        <Compile Remove="src/csharp/auto/PropertiesEnumGenerator/**/*.cs" />
+    </ItemGroup>
+
+<PropertyGroup>
+    <CodeGeneratorProject>$(MSBuildProjectDirectory)/src/csharp/auto/PropertiesEnumGenerator/PEG.csproj</CodeGeneratorProject>
+    <CodeGeneratorClassTypes>$(MSBuildProjectDirectory)/src/csharp/auto/GenClassType.json</CodeGeneratorClassTypes>
+    <CodeGeneratorValueTypes>$(MSBuildProjectDirectory)/src/csharp/auto/GenValueType.json</CodeGeneratorValueTypes>
+    <CodeGeneratorOutput>$(MSBuildProjectDirectory)/src/csharp/auto/build</CodeGeneratorOutput>
+</PropertyGroup>
+
+<Target Name="AutoGenerateGodotProperties"
+        BeforeTargets="CoreCompile"
+        DependsOnTargets="ResolveReferences">
+
+    <ItemGroup>
+        <GodotSharpReference
+            Include="@(ReferencePath)"
+            Condition="'%(Filename)%(Extension)' == 'GodotSharp.dll'" />
+    </ItemGroup>
+
+    <Error
+        Condition="'@(GodotSharpReference)' == ''"
+        Text="GodotSharp.dll was not found in resolved references." />
+
+    <Message
+        Importance="High"
+        Text="GodotSharp: @(GodotSharpReference)" />
+
+    <Delete
+        Files="$(CodeGeneratorOutput)/**/*.cs"
+        Condition="Exists('$(CodeGeneratorOutput)')" />
+
+    <Exec
+        Command='dotnet run --no-restore --project "$(CodeGeneratorProject)" -- "@(GodotSharpReference)" "$(CodeGeneratorClassTypes)" "$(CodeGeneratorValueTypes)" "$(CodeGeneratorOutput)"' />
+
+</Target>
+
 </Project>

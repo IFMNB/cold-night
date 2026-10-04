@@ -17,7 +17,7 @@ namespace ColdNight.src.game.physics;
 /// При скорости ниже <see cref="MinSpeed"/> воздействие не обновляется.
 /// </para>
 /// </summary>
-[GlobalClass] public partial class DamperController : MovePController{
+[GlobalClass] public partial class RigidBody3DDamperController : RigidBody3DMoveController{
     /// <summary>
     /// Минимальная скорость цели, при которой демпфер обновляет направление воздействия.
     /// 
@@ -29,7 +29,7 @@ namespace ColdNight.src.game.physics;
     
     public override void _PhysicsProcess(double delta)
     {
-        if (TryGetTarget(out var t) && t!.IsInsideTree() && t.LinearVelocity.LengthSquared() > MinSpeed * MinSpeed)
+        if (Target is RigidBody3D t && t!.IsInsideTree() && t.LinearVelocity.LengthSquared() > MinSpeed * MinSpeed)
             Direction = t.LinearVelocity;
         
         base._PhysicsProcess(delta);

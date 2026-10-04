@@ -19,7 +19,7 @@ namespace ColdNight.src.common;
 /// </para>
 /// </summary>
 [GlobalClass]
-public partial class WireIn : VariantNode
+public partial class WireIn : ValueNode
 {
     /// <summary>
     /// Определяет способ применения входящего значения к текущему значению.

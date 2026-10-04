@@ -21,7 +21,7 @@ namespace ColdNight.src.game.physics;
 /// прикладывает максимальную силу в направлении уменьшения высоты.
 /// </para>
 /// </summary>
-[GlobalClass] public partial class HeightPController : PhysicsController, ICalculatedPID, IRayCast3DCompatible
+[GlobalClass] public partial class HeightPController : RigidBody3DPhysicsController, ICalculatedPID, IRayCast3DCompatible
 {
 
     /// <summary>
@@ -93,7 +93,7 @@ namespace ColdNight.src.game.physics;
         base._PhysicsProcess(delta);
         
         if (Enabled)
-            if (TryGetTarget(out var target))
+            if (Target is RigidBody3D target)
                 if (target!.IsInsideTree())
                 {
                     Active = true;

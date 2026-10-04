@@ -43,8 +43,8 @@ namespace ColdNight.src.common.input;
     /// </summary>
     [Export] public Vector2 Delta2 {get => RealDelta2;protected set
     {
-        RealDelta2 = value;
-        Delta3 = new Vector3(value.X, value.Y, 0f);
+        RealDelta2 = new Vector2(-value.Y, -value.X);
+        Delta3 = new Vector3(-value.Y, -value.X, 0f);
         DeltaDirection = Delta3.Normalized();
         EmitSignalDeltaChanged(RealDelta2, Delta3);
     }}

@@ -20,7 +20,7 @@ namespace ColdNight.src.common;
 /// </para>
 /// </summary>
 [GlobalClass]
-public partial class WireOut : VariantNode
+public partial class WireOut : ValueNode
 {
     /// <summary>
     /// Список входящих каналов, которым передаётся текущее значение.

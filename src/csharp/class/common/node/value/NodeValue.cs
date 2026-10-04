@@ -2,30 +2,21 @@ using Godot;
 
 namespace ColdNight.src.common.value;
 
-[GlobalClass] public partial class NodeValue : ValueNode<Node>
+/// <summary>
+/// Хранит ссылку на ноду
+/// </summary>
+[GlobalClass] public partial class NodeValue : ValueNode
 {
-    [Export] public override Node? Value {get => base.Value;set => base.Value = value;}
+    [Export] public new Node? Value {get => GetNodeOrNull(base.Value.AsNodePath()) ;set => base.Value = value?.GetPath() ?? new NodePath();}
 
-    [Signal] public delegate void WatchedReleasedEventHandler();
-    [Signal] public delegate void WatchedReplacedEventHandler();
-    [Signal] public delegate void WatchedExitedTreeEventHandler();
-    [Signal] public delegate void WatchedEnteredTreeEventHandler();
-
-
-    [Signal] public delegate void WatchedRemovedEventHandler(Node? @new, Node? @old);
-    [Signal] public delegate void WatchedAvailableEventHandler(Node? @new, Node? @old);
-    [Signal] public delegate void WatchedChangedEventHandler(Node? @new, Node? @old);
-    [Signal] public delegate void WatchedNewEventHandler(Node? @new, Node? @old);
-
+    [Signal] public delegate void NodeValueReleasedEventHandler();
+    [Signal] public delegate void NodeValueReplacedEventHandler();
+    [Signal] public delegate void NodeValueExitedTreeEventHandler();
+    [Signal] public delegate void NodeValueEnteredTreeEventHandler();
 
        public override void _Ready()
     {
         base._Ready();
-
-        ValueAvailable += EmitSignalWatchedAvailable;
-        ValueChanged += EmitSignalWatchedChanged;
-        ValueRemoved += EmitSignalWatchedRemoved;
-        ValueNew += EmitSignalWatchedNew;
 
         ValueChanged += OnWatchedValueChanged;
 
@@ -43,36 +34,40 @@ namespace ColdNight.src.common.value;
     }
 
 
-    private void OnWatchedValueChanged(Node? @new, Node? @old)
+    private void OnWatchedValueChanged(Variant @new, Variant @old)
     {
-        if (@old != null)
-        {
-            UnwatchNode(@old);
+        var @node_new = @new.AsGodotObject() as Node;
+        var @node_old = @old.AsGodotObject() as Node;
 
-            if (@new == null)
-                EmitSignalWatchedReleased();
+
+        if (@node_old is not null && IsInstanceValid(node_old))
+        {
+            UnwatchNode(@node_old);
+
+            if (@node_new is null)
+                EmitSignalNodeValueReleased();
         }
 
-        if (@new != null)
+        if (@node_new is not null && IsInstanceValid(node_new))
         {
-            WatchNode(@new);
+            WatchNode(node_new);
 
-            if (@old != null)
-                EmitSignalWatchedReplaced();
+            if (node_old is not null && IsInstanceValid(node_old))
+                EmitSignalNodeValueReplaced();
         }
     }
 
 
     private void WatchNode(Node node)
     {
-        node.TreeEntered += EmitSignalWatchedEnteredTree;
-        node.TreeExiting += EmitSignalWatchedExitedTree;
+        node.TreeEntered += EmitSignalNodeValueEnteredTree;
+        node.TreeExiting += EmitSignalNodeValueExitedTree;
     }
 
 
     private void UnwatchNode(Node node)
     {
-        node.TreeEntered -= EmitSignalWatchedEnteredTree;
-        node.TreeExiting -= EmitSignalWatchedExitedTree;
+        node.TreeEntered -= EmitSignalNodeValueEnteredTree;
+        node.TreeExiting -= EmitSignalNodeValueExitedTree;
     }
 }

@@ -1,3 +1,4 @@
+using ColdNight.src.common;
 using Godot;
 
 namespace ColdNight.src.game.physics;
@@ -5,7 +6,7 @@ namespace ColdNight.src.game.physics;
 /// <summary>
 /// Абстрактный класс для всех физических контроллеров, влияющих на поведение физического тела
 /// </summary>
-[GlobalClass] public abstract partial class PhysicsController : Node, IPhysicsController<RigidBody3D?>
+[GlobalClass] public abstract partial class PhysicsController : Node, ISwitchable
 {
     /// <summary>
     /// Для данного дерева классов это свойство означает отключение сил, которые применяют классы
@@ -25,32 +26,6 @@ namespace ColdNight.src.game.physics;
     /// Показывает, работал ли в текущем физическом кадре контроллер или нет
     /// </summary>
     [Export] public bool Active {get;set;} = false;
-    [Export] public RigidBody3D? Target {get;set;}
+    
     [Export] public virtual float MaxForce {get;set;} = 10f;
-
-    /// <summary>
-    /// Вернет `boolean` результат попытки взять `Target` и саму цель, либо `null`
-    /// </summary>
-    /// <param name="target"></param>
-    /// <returns></returns>
-    public bool TryGetTarget(out RigidBody3D? target)
-    {
-        target = this.Target;
-        return IsInstanceValid(target);
-    }
-
-    /// <summary>
-    /// Попытается установить `Target`, вернет результат попытки установки
-    /// </summary>
-    /// <param name="target"></param>
-    public bool TrySetTarget (RigidBody3D? target)
-    {
-        if (this.Target != target)
-            {
-                this.Target = target;
-                return true;
-            }
-        return false;
-    }
-
 }

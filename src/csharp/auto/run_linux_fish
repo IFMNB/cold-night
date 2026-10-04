@@ -1,0 +1,10 @@
+#!/usr/bin/env fish
+
+set project (find . -name 'Cold Night.csproj' -type f -print -quit)
+
+if test -z "$project"
+    echo "Cold Night.csproj not found."
+    exit 1
+end
+
+dotnet msbuild "Cold Night.csproj" -target:AutoGenerateGodotProperties -v:diag
