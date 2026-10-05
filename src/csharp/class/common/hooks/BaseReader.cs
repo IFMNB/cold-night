@@ -8,11 +8,11 @@ namespace ColdNight.src.common.hooks;
 /// 
 /// Наследники этого класса используются в системе "проводов" для получения данных из других объектов и передачи их в другие объекты.
 /// </summary>
-[GlobalClass] public abstract partial class BaseReader : Node, IWireSource, ITargetable<Node?>
+[GlobalClass] public abstract partial class BaseReader : Node, ITargetable<Node?>
 {
     [Export] public bool Enabled {get;set;} = true;
     [Export] public HookMode Mode {get;set;} = HookMode.OnProcess;
-    [Export] public WireOut? Output {get;set;}
+    [Export] public Wire? Output {get;set;}
     [Export] public Variant LastRead {get;set;}
     [Export] public Node? Target {get => RealTarget;set => RealTarget = value;}
 
@@ -39,20 +39,21 @@ namespace ColdNight.src.common.hooks;
     public override void _PhysicsProcess (double delta) => DoOperation(this);
     public override void _Process (double delta) => DoOperation(this);
 
-    private static void DoOperation (BaseReader reader)
+    private static void DoOperation (BaseReader? reader)
     {
-        if (reader.Enabled && reader.Mode == HookMode.OnReady)
-            if (IsInstanceValid(reader.Target))
+        if (reader?.IsActive() ?? false)
+            return;
+
+        if (reader!.Enabled && reader.Mode == HookMode.OnReady)
+            if (reader.Target?.IsActive() ?? false)
                 if (reader.Read(reader.Target, out var result))
                     if (result.VariantType == reader.ExpectedType || reader.ExpectedType == Variant.Type.Max)
                         reader.LastRead = result;
                 
-
-        if (IsInstanceValid(reader.Output))
-            if (reader.Output.IsInsideTree())
-                if (reader.LastRead.VariantType == reader.ExpectedType)
-                    if (!VariantExtension.ValueEqual(reader.LastRead, reader.Output.Value))
-                            reader.Output.Value = reader.LastRead;
+        if (reader?.IsActive() ?? false)
+                if (reader.LastRead.VariantType == reader.ExpectedType || reader.ExpectedType == Variant.Type.Max)
+                    if (!VariantExtension.ValueEqual(reader.LastRead, reader.Output?.GetReceivedEverPos(0) ?? default))
+                            reader.Output?.Emit(reader.LastRead);
     }               
 }
 

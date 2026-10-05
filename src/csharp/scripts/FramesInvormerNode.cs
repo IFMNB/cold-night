@@ -2,7 +2,7 @@ using Godot;
 
 namespace ColdNight.src.game.scripts;
 
-public partial class FramesInvormerNode : Node
+[Icon("res://addons/at-icons/node/info.svg")] public partial class FramesInvormerNode : Node
 {
     [Export] public Label? AverageFPS {get;set;}
     [Export] public Label? TotalFramesPhysics {get;set;}

@@ -24,10 +24,6 @@ window/stretch/aspect="expand"
 
 project/assembly_name="Cold Night"
 
-[editor_plugins]
-
-enabled=PackedStringArray()
-
 [file_customization]
 
 folder_colors={

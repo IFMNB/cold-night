@@ -10,11 +10,11 @@ namespace ColdNight.src.common.hooks;
 /// данных из других объектов и передачи их в другие объекты.
 /// </summary>
 [GlobalClass]
-public abstract partial class BaseWriter : Node, IWireReceiver, ITargetable<Node?>
+public abstract partial class BaseWriter : Node, ITargetable<Node?>
 {
     [Export] public bool Enabled {get;set;} = true;
     [Export] public HookMode Mode {get;set;} = HookMode.OnProcess;
-    [Export] public WireIn? Input {get;set;}
+    [Export] public Wire? Input {get;set;}
     [Export] public Variant LastWrite {get;set;}
     [Export] public Node? Target {get => RealTarget;set => RealTarget = value;}
 
@@ -47,11 +47,10 @@ public abstract partial class BaseWriter : Node, IWireReceiver, ITargetable<Node
     private static void DoOperation(BaseWriter writer, HookMode mode)
     {
         if (writer.Enabled && writer.Mode == mode)
-            if (IsInstanceValid(writer.Target) && writer.Target.IsInsideTree())
-                if (IsInstanceValid(writer.Input) && writer.Input.IsInsideTree())
-                    if (writer.Input.IsInsideTree())
+            if (writer.Target?.IsActive() ?? false)
+                    if (writer.Input?.IsActive() ?? false)
                     {
-                        var value = writer.Input.Value;
+                        var value = writer.Input.GetReceivedEverPos(0);
                         if (value.VariantType == writer.ExpectedType || writer.ExpectedType == Variant.Type.Max)
                             if (!VariantExtension.ValueEqual(writer.LastWrite, value))
                                 if (writer.Write(writer.Target, value))

@@ -6,7 +6,7 @@ namespace ColdNight.src.game.physics;
 /// <summary>
 /// Абстрактный класс для всех физических контроллеров, влияющих на поведение физического тела
 /// </summary>
-[GlobalClass] public abstract partial class PhysicsController : Node, ISwitchable
+[GlobalClass, Icon("res://addons/at-icons/node/atom.svg")] public abstract partial class PhysicsController : Node, ISwitchable
 {
     /// <summary>
     /// Для данного дерева классов это свойство означает отключение сил, которые применяют классы

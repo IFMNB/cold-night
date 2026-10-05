@@ -21,18 +21,18 @@ namespace ColdNight.src.game.physics;
 /// прикладывает максимальную силу в направлении уменьшения высоты.
 /// </para>
 /// </summary>
-[GlobalClass] public partial class HeightPController : RigidBody3DPhysicsController, ICalculatedPID, IRayCast3DCompatible
+[GlobalClass, Icon("res://addons/at-icons/node3d/arrow_up_from_line.svg")] public partial class RigidBody3DHeightController : RigidBody3DPhysicsController, ICalculatedPID, IRayCast3DCompatible
 {
 
     /// <summary>
     /// Максимальная дистанция луча. Если ни во что не попали — считаем, что летим высоко
     /// </summary>
-    [Export] public float MaxRayLength = 10f;
+    [Export] public float MaxRayLength = 2f;
 
     /// <summary>
     /// Ожидаемая высота над поверхностью
     /// </summary>
-    [Export] public float ExpectedHeight = 10f;
+    [Export] public float ExpectedHeight = 1f;
 
     /// <summary>
     /// Исключает использование `GlobalBasis.Y` у `Target`, вместо этого задавая направление высоты

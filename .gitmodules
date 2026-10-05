@@ -1,0 +1,3 @@
+[submodule "vendor/at-icons"]
+	path = vendor/at-icons
+	url = https://github.com/Voxybuns/at-icons.git

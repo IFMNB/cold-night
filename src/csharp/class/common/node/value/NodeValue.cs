@@ -5,7 +5,7 @@ namespace ColdNight.src.common.value;
 /// <summary>
 /// Хранит ссылку на ноду
 /// </summary>
-[GlobalClass] public partial class NodeValue : ValueNode
+[GlobalClass, Icon("res://addons/at-icons/node/box.svg")] public partial class NodeValue : ValueNode
 {
     [Export] public new Node? Value {get => GetNodeOrNull(base.Value.AsNodePath()) ;set => base.Value = value?.GetPath() ?? new NodePath();}
 

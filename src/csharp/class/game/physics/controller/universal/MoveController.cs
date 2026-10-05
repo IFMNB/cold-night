@@ -10,14 +10,13 @@ namespace ColdNight.src.game.physics;
 /// Состояние линейной скорости хранится в metadata цели, поэтому несколько
 /// контроллеров могут работать с одним Node3D и совместно изменять его скорость.
 /// </summary>
-[GlobalClass]
-public partial class MoveController : Universal3DPhysicsController, ICalculatedP, IWireReceiver
+[GlobalClass, Icon("res://addons/at-icons/node3d/motion_vector.svg")] public partial class MoveController : Universal3DPhysicsController, ICalculatedP
 {
     [Export]
     public PCalculator Calculator { get; set; } = new();
 
     [Export]
-    public WireIn? Input { get; set; }
+    public Wire? Input { get; set; }
 
     /// <summary>
     /// Направление движения.
@@ -87,10 +86,7 @@ public partial class MoveController : Universal3DPhysicsController, ICalculatedP
     {
         base._PhysicsProcess(delta);
 
-        if (!Enabled ||
-            Target is null ||
-            !IsInstanceValid(Target) ||
-            !Target.IsInsideTree())
+        if (!Enabled || (Target?.IsActive() ?? false) == false)
         {
             Active = false;
             return;
@@ -130,16 +126,13 @@ public partial class MoveController : Universal3DPhysicsController, ICalculatedP
     {
         base._Process(delta);
 
-        if (Input is not null)
+        if (Input?.IsActive() ?? false)
         {
-            if (VariantExtension.TryApply<Vector3>(
-                (Variant)Direction,
-                Input.Value,
-                Input.Mode,
-                out var result))
-            {
-                Direction = result;
-            }
+            Variant InputReceived = Input.GetReceivedEverPos(0).Mutate<Vector3>();            
+            if (VariantExtension.TryApply<Vector3>(Direction, InputReceived, Input.ReceiverMode, out var result))
+                Direction = result; 
         }
+
+
     }
 }

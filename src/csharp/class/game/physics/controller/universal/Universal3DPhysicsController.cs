@@ -4,7 +4,7 @@ using Godot;
 /// <summary>
 /// Универсальная линейка контроллеров, способная применять свое воздействие на объекты любого рода в 3D пространстве
 /// </summary>
-[GlobalClass] public abstract partial class Universal3DPhysicsController : PhysicsController
+[GlobalClass, Icon("res://addons/at-icons/node3d/globe.svg")] public abstract partial class Universal3DPhysicsController : PhysicsController
 {
     /// <summary>
     /// Некоторые контроллеры реализуют собственное поведение даже там где это не поддерживается.

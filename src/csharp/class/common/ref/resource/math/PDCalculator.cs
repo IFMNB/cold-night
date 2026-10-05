@@ -10,7 +10,7 @@ namespace ColdNight.src.common;
 /// Он постоянно сравнивают желаемое значение с текущим и на основе ошибки
 /// вычисляют управляющее воздействие, например - силу для `RigidBody3D`
 /// </summary>
-[GlobalClass] public partial class PDCalculator : FCalculator, ISingletone<PDCalculator>
+[GlobalClass, Icon("res://addons/at-icons/node/calculator.svg")] public partial class PDCalculator : FCalculator, ISingletone<PDCalculator>
 {
     public static PDCalculator Instance { get; } = new();
     private float previousError = 0f;

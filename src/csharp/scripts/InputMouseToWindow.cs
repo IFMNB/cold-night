@@ -2,7 +2,7 @@ using Godot;
 
 namespace ColdNight.src.game.scripts;
 
-public partial class InputMouseToWindow : Node
+[Icon("res://addons/at-icons/node/mouse.svg")] public partial class InputMouseToWindow : Node
 {
     public override void _Input(InputEvent @event)
     {

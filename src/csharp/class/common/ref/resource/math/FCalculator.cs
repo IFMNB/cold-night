@@ -7,7 +7,7 @@ namespace ColdNight.src.common;
 /// 
 /// (Proportional–Integral–Derivative)
 /// </summary>
-[GlobalClass] public abstract partial class FCalculator : Resource
+[GlobalClass, Icon("res://addons/at-icons/node/calculator.svg")] public abstract partial class FCalculator : Resource
 {
     /// <summary>
     /// Применяемые к калькулятору коэффициенты. Подробней о них описывает сам калькулятор, который

@@ -16,10 +16,10 @@ namespace ColdNight.src;
 public static class VariantExtension
 {
 
-    public static bool IsNull (Variant value) => value.VariantType == Variant.Type.Nil;
-    public static bool TypeEqual (Variant left, Variant right) => left.VariantType == right.VariantType;
+    public static bool IsNull (this Variant value) => value.VariantType == Variant.Type.Nil;
+    public static bool TypeEqual (this Variant left, Variant right) => left.VariantType == right.VariantType;
 
-    public static bool ValueEqual (Variant left, Variant right)
+    public static bool ValueEqual (this Variant left, Variant right)
     {
         if (left.VariantType != right.VariantType) return false;
 
@@ -43,6 +43,15 @@ public static class VariantExtension
                 #endif
                 return false;
         }
+    }
+
+    public enum OperationMode
+    {
+        Add,
+        Sub,
+        Mult,
+        Divide,
+        Replace
     }
 
     public static bool TryApply(Variant left, Variant right, OperationMode mode, out Variant result)
@@ -375,7 +384,9 @@ public static class VariantExtension
         return false;
     }
 
-    public static bool TryApply<[MustBeVariant] T> (Variant left, Variant right, OperationMode mode, out T answer)
+    public static T? Mutate<[MustBeVariant] T>(this Variant variant) => variant.Obj is T value ? value : default;
+
+    public static bool TryApply<[MustBeVariant] T> (this Variant left, Variant right, OperationMode mode, out T answer)
     {
         answer = default!;
 
@@ -389,7 +400,7 @@ public static class VariantExtension
         return false;
     }
 
-    public static bool TryCast<[MustBeVariant] T>(Variant value, out T result)
+    public static bool TryCast<[MustBeVariant] T>(this Variant value, out T result)
     {
         if (value.VariantType == Variant.Type.Nil)
         {
@@ -409,15 +420,10 @@ public static class VariantExtension
         }
     }
 
-    public static bool IsNumeric(Variant.Type t) =>
+    public static bool IsNumeric(this Variant.Type t) =>
         t is Variant.Type.Int or Variant.Type.Float;
+
+    public static bool IsNumeric(this Variant t) =>
+        t.VariantType is Variant.Type.Int or Variant.Type.Float;
 }
 
-public enum OperationMode
-{
-    Add,
-    Sub,
-    Mult,
-    Divide,
-    Replace
-}

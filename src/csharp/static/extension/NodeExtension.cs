@@ -5,7 +5,9 @@ namespace ColdNight.src;
 
 public static class NodeExtension
 {
-    public static List<Node> GetChildrenWithRid(Node root)
+    public static bool IsActive (this Node node) => GodotObject.IsInstanceValid(node) && node.IsInsideTree();
+
+    public static List<Node> GetChildrenWithRid(this Node root)
     {
         var result = new List<Node>();
         var stack  = new Stack<Node>();
@@ -26,7 +28,7 @@ public static class NodeExtension
         return result;
     }
 
-    public static List<Rid> GetCollisionRids(Node root)
+    public static List<Rid> GetCollisionRids(this Node root)
     {
         var result = new List<Rid>();
         var stack  = new Stack<Node>();
@@ -46,7 +48,7 @@ public static class NodeExtension
         return result;
     }
 
-    public static List<(CollisionObject3D Node, Rid Rid)> GetCollisionObjectsWithRid(Node root)
+    public static List<(CollisionObject3D Node, Rid Rid)> GetCollisionObjectsWithRid(this Node root)
     {
         var result = new List<(CollisionObject3D, Rid)>();
         var stack  = new Stack<Node>();
@@ -66,9 +68,9 @@ public static class NodeExtension
         return result;
     }
 
-    public static IEnumerable<Node> GetAllDescendants(Node root)
+    public static IEnumerable<Node> GetAllDescendants(this Node root)
     {
-        foreach (Node child in root.GetChildren())
+        foreach ( Node child in root.GetChildren())
         {
             yield return child;
             foreach (var sub in GetAllDescendants(child))
@@ -76,12 +78,12 @@ public static class NodeExtension
         }
     }
 
-    public static IEnumerable<T> GetAllDescendants<T>(Node root, bool descendIntoMatches = true, bool includeSelf = false) where T : Node
+    public static IEnumerable<T> GetAllDescendants<T>(this Node root, bool descendIntoMatches = true, bool includeSelf = false) where T : Node
     {
         if (includeSelf && root is T self)
             yield return self;
 
-        foreach (Node child in root.GetChildren())
+        foreach ( Node child in root.GetChildren())
         {
             if (child is T t)
             {

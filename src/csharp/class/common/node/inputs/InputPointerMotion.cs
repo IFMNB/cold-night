@@ -1,6 +1,7 @@
+using ColdNight.src.common;
 using Godot;
 
-namespace ColdNight.src.common.input;
+namespace ColdNight.src.game.input;
 
 /// <summary>
 /// Источник данных о движении указателя пользователя.
@@ -13,7 +14,7 @@ namespace ColdNight.src.common.input;
 /// величин в плоскости XY: координата Z всегда равна нулю.
 /// </para>
 /// </summary>
-[GlobalClass] public partial class InputPointerMotion : Node, ISwitchable, IWireSource
+[GlobalClass, Icon("res://addons/at-icons/node/arrow_axes_2d.svg")] public partial class InputPointerMotion : Node, ISwitchable, IAutoResetInput
 {
     /// <summary>
     /// Определяет, обрабатывает ли объект события ввода.
@@ -31,7 +32,7 @@ namespace ColdNight.src.common.input;
     /// Для данного класса выход содержит значение <see cref="Delta3"/>.
     /// </para>
     /// </summary>
-    [Export] public WireOut? Output {get;set;}
+    [Export] public Wire? Delta3Output {get;set;}
 
     /// <summary>
     /// Величина перемещения указателя в двумерном пространстве.
@@ -126,6 +127,33 @@ namespace ColdNight.src.common.input;
     protected Vector2 RealDelta2 = Vector2.Zero;
     protected Vector2 RealVelocity2 = Vector2.Zero;
 
+    [Export] public bool ResetInput {get;set;} = true;
+    [Export] public double ResetInputTime {get;set;} = 0.015d;
+    private double AccumulatedResetTime = 0d;
+    private bool CapturedInputNow = false;
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+
+        AccumulatedResetTime += delta;
+        if (AccumulatedResetTime > ResetInputTime)
+        {
+            Delta2 = Vector2.Zero;
+            Velocity2 = Vector2.Zero;
+            AccumulatedResetTime = 0d;
+           
+            if (CapturedInputNow)
+            {
+                CapturedInputNow = false;
+                if (Delta3Output?.IsActive() ?? false)
+                    Delta3Output.Emit(Delta3);
+            }
+
+
+        }
+    }
+
     public override void _UnhandledInput(InputEvent @event)
     {
         if (!Enabled)
@@ -139,11 +167,14 @@ namespace ColdNight.src.common.input;
             Delta2 = motion.Relative;
             Velocity2 = motion.Velocity;
         } else if (@event is InputEventJoypadMotion joypadMotion)
-        {
+        #if DEBUG
             GD.PushError("cannot handle joypad right now, unsupported + TODO");
-        }
+        #endif
 
-        if (IsInstanceValid(Output))
-            Output.Value = Delta3;
+        if (Delta3Output?.IsActive() ?? false)
+            Delta3Output.Emit(Delta3);
+
+        CapturedInputNow = true;
+        AccumulatedResetTime = 0d;
     }
 }

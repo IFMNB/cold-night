@@ -17,8 +17,7 @@ namespace ColdNight.src.game.physics;
 /// контроллеров могут одновременно изменять её.
 /// </para>
 /// </summary>
-[GlobalClass]
-public partial class DamperController : Universal3DPhysicsController, ICalculatedP
+[GlobalClass, Icon("res://addons/at-icons/node3d/stop_sign.svg")]public partial class DamperController : Universal3DPhysicsController, ICalculatedP
 {
 
     [Export]

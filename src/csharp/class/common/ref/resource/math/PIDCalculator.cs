@@ -12,7 +12,7 @@ namespace ColdNight.src.common;
 /// `D` — реагирует на скорость изменения ошибки.
 /// `Kp, Ki, Kd` — коэффициенты настройки.
 /// </summary>
-[GlobalClass] public partial class PIDCalculator : FCalculator, ISingletone<PIDCalculator>
+[GlobalClass, Icon("res://addons/at-icons/node/calculator.svg")] public partial class PIDCalculator : FCalculator, ISingletone<PIDCalculator>
 {
 
     public static PIDCalculator Instance { get; } = new();

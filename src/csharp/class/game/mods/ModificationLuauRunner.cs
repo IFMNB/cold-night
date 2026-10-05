@@ -22,8 +22,7 @@ namespace ColdNight.src.game.mods;
 ///
 /// Один Resume соответствует одному execution slice.
 /// </summary>
-[GlobalClass]
-public partial class ModificationRunner : LuauRunner
+[GlobalClass, Icon("res://addons/at-icons/node/file_pencil.svg")] public partial class ModificationRunner : LuauRunner
 {
     [Export] public ModificationManifest? Manifest { get; set; }
 

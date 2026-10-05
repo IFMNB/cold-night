@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Godot;
 
 namespace ColdNight.src.common;
 
 /// <summary>
 /// Небольшой класс, реализующий регистр состояний
 /// </summary>
-public partial class StateRegistry : Observer
+[GlobalClass] public partial class StateRegistry : Observer
 {
     readonly Dictionary<Enum, bool> states = [];
     public bool GetState (Enum State, out bool result) => states.TryGetValue(State, out result);

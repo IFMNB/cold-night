@@ -4,7 +4,7 @@ using Godot;
 
 namespace ColdNight.src.game.mods;
 
-[GlobalClass] public partial class ModificationManifest : Resource
+[GlobalClass, Icon("res://addons/at-icons/node/file_cog.svg")] public partial class ModificationManifest : Resource
 {
     [Export] public ModificationStartOn ModType = ModificationStartOn.Global;
     [Export] public ModificationRuntime ModMainType = ModificationRuntime.LuauMod;

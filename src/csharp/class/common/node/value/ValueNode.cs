@@ -7,8 +7,7 @@ namespace ColdNight.src.common.value;
 /// <summary>
 /// Нода, использующаяся только в качестве хранителя какого-либо значения.
 /// </summary>
-[GlobalClass]
-public partial class ValueNode : Node, ISwitchable
+[GlobalClass, Icon("res://addons/at-icons/node/numbers.svg")] public partial class ValueNode : Node, ISwitchable
 {
     [Export] public bool Enabled {get;set;} = true;
 

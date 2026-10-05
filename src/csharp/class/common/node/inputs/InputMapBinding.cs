@@ -5,8 +5,7 @@ namespace ColdNight.src.common.input;
 /// <summary>
 /// Нода, реализующая подписку на один или несколько биндингов в Input Map.
 /// </summary>
-[GlobalClass]
-public partial class InputMapBinding : Node, ISwitchable
+[GlobalClass, Icon("res://addons/at-icons/node/keyboard.svg")] public partial class InputMapBinding : Node, ISwitchable
 {
     /// <summary>
     /// Определяет, должна ли нода обрабатывать входящие события ввода.

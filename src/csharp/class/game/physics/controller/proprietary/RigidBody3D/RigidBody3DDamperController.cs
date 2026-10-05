@@ -17,7 +17,7 @@ namespace ColdNight.src.game.physics;
 /// При скорости ниже <see cref="MinSpeed"/> воздействие не обновляется.
 /// </para>
 /// </summary>
-[GlobalClass] public partial class RigidBody3DDamperController : RigidBody3DMoveController{
+[GlobalClass, Icon("res://addons/at-icons/node3d/stop_sign.svg")] public partial class RigidBody3DDamperController : RigidBody3DMoveController{
     /// <summary>
     /// Минимальная скорость цели, при которой демпфер обновляет направление воздействия.
     /// 
