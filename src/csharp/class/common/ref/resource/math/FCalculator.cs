@@ -37,4 +37,7 @@ namespace ColdNight.src.common;
     /// <param name="delta">Какое время этого шага физики?</param>
     /// <returns>Импульс, применяемый для цели доменного кода</returns>
     public float CalculateImpulse(float target, float current, double delta) => CalculateForce(target, current, delta) * (float)delta; 
+
+    /// <summary>Сбрасывает внутреннее состояние (интеграл, прошлую ошибку). Для P ничего не делает.</summary>
+    public virtual void Reset() { }
 }

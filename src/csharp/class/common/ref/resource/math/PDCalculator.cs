@@ -14,15 +14,17 @@ namespace ColdNight.src.common;
 {
     public static PDCalculator Instance { get; } = new();
     private float previousError = 0f;
+    private bool primed = false;
+
+    public override void Reset() { previousError = 0f; primed = false; }
 
     public override float CalculateForce(float target, float current, double delta)
     {
         float error = target - current;
-        float derivative = (error - previousError) / (float)delta;
+        float derivative = primed ? (error - previousError) / (float)delta : 0f;
         previousError = error;
+        primed = true;
 
-        return
-            Coefficients.X * error +
-            Coefficients.Y * derivative;
+        return Coefficients.X * error + Coefficients.Y * derivative;
     }
 }

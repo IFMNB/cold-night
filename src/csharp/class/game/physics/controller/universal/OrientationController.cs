@@ -5,14 +5,25 @@ namespace ColdNight.src.game.physics;
 
 
 /// <summary>
-/// Контроллер который применяет или постоянную силу, или переменную силу для поворотов объекта. 
+/// Контроллер который применяет постоянную или переменную силу для поворотов объекта. 
 /// </summary>
 [GlobalClass, Icon("res://addons/at-icons/node3d/rotate.svg")] public partial class OrientationController : Universal3DPhysicsController
 {
     [Export] public Wire? Input {get;set;}
 
+    /// <summary>
+    /// В частном случае это свойство заставляет отменять влияние на Pitch, он же тангаж
+    /// </summary>
     [Export] public bool IgnoreX {get;set;} = false;
+    
+    /// <summary>
+    /// В частном случае это свойство заставляет отменять влияние на Yaw, он же рысканье
+    /// </summary>
     [Export] public bool IgnoreY {get;set;} = false;
+
+    /// <summary>
+    /// В частном случае это свойство заставляет отменять влияние на Roll, он же крен
+    /// </summary>
     [Export] public bool IgnoreZ {get;set;} = false;
 
     [Export] public Vector3 Direction {get => RealDirection;set => RealDirection = value;}

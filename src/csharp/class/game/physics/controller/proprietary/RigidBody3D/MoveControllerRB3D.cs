@@ -11,7 +11,7 @@ namespace ColdNight.src.game.physics;
 /// </para>
 /// </summary>
 [GlobalClass, Icon("res://addons/at-icons/node3d/motion_vector.svg")]
-public partial class RigidBody3DMoveController : RigidBody3DPhysicsController, ICalculatedPD
+public partial class MoveControllerRB3D : PhysicsControllerRB3D, ICalculatedPD
 {
     [Export] public PDCalculator Calculator { get; set; } = new();
 
@@ -39,7 +39,7 @@ public partial class RigidBody3DMoveController : RigidBody3DPhysicsController, I
     [Export] public bool Local { get; set; } = true;
 
     /// <summary>
-    /// Нормализованное направление для контроллера, определяющее куда он сейчас будет двигаться
+    /// Нормализованное направление для контроллера, определяющее куда он сейчас будет двигаться.
     /// 
     /// Контроллер сам устанавливает его
     /// </summary>
@@ -57,7 +57,6 @@ public partial class RigidBody3DMoveController : RigidBody3DPhysicsController, I
 
             var direction = NormalizedDirection;
 
-            // Переводим локальное направление цели в мировое пространство.
             if (Local)
                 direction = Target.GlobalTransform.Basis.Orthonormalized() * direction;
 

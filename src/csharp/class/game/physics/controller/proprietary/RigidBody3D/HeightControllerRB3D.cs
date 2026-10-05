@@ -21,7 +21,7 @@ namespace ColdNight.src.game.physics;
 /// прикладывает максимальную силу в направлении уменьшения высоты.
 /// </para>
 /// </summary>
-[GlobalClass, Icon("res://addons/at-icons/node3d/arrow_up_from_line.svg")] public partial class RigidBody3DHeightController : RigidBody3DPhysicsController, ICalculatedPID, IRayCast3DCompatible
+[GlobalClass, Icon("res://addons/at-icons/node3d/arrow_up_from_line.svg")] public partial class HeightControllerRB3D : PhysicsControllerRB3D, ICalculatedPID, IRayCast3DCompatible
 {
 
     /// <summary>

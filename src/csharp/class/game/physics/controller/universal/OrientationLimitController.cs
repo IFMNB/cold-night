@@ -6,17 +6,25 @@ namespace ColdNight.src.game.physics;
 /// <summary>Откуда берётся якорь (центр пределов) для <see cref="OrientationLimitController"/>.</summary>
 public enum OrientationAnchorMode
 {
-    /// <summary>Предустановка: фиксированная ориентация в базисе родителя (<see cref="OrientationLimitController.PresetRotationDegrees"/>).</summary>
+    /// <summary>
+    /// Предустановка: фиксированная ориентация в базисе родителя (<see cref="OrientationLimitController.PresetRotationDegrees"/>).
+    /// </summary>
     Preset,
 
-    /// <summary>Якорем служит ориентация отдельного узла <see cref="OrientationLimitController.AnchorTarget"/>.</summary>
+    /// <summary>
+    /// Якорем служит ориентация отдельного узла <see cref="OrientationLimitController.AnchorTarget"/>.
+    /// </summary>
     AnchorTarget
 }
 
-/// <summary>Чей <c>Node3D.RotationOrder</c> задаёт порядок Euler-разложения.</summary>
+/// <summary>
+/// Чей <c>Node3D.RotationOrder</c> задаёт порядок Euler-разложения.
+/// </summary>
 public enum OrientationOrderSource
 {
-    /// <summary>Порядок берётся у ограничиваемого узла (Target).</summary>
+    /// <summary>
+    /// Порядок берётся у ограничиваемого узла (Target).
+    /// </summary>
     Target,
 
     /// <summary>
@@ -59,10 +67,14 @@ public partial class OrientationLimitController : Universal3DPhysicsController
     private const float Deg2Rad = Mathf.Pi / 180f;
     private const float Rad2Deg = 180f / Mathf.Pi;
 
-    /// <summary>Минимальное изменение (градусы), ради которого стоит писать в Target.</summary>
+    /// <summary>
+    /// Минимальное изменение (градусы), ради которого стоит писать в Target.
+    /// </summary>
     private const float WriteEpsilonDeg = 1e-4f;
 
-    /// <summary>Максимум по модулю для средней оси разложения (градусы), чтобы не дойти до особой точки.</summary>
+    /// <summary>
+    /// Максимум по модулю для средней оси разложения (градусы), чтобы не дойти до особой точки.
+    /// </summary>
     private const float MiddleAxisCap = 89f;
 
     [Export] public bool LimitYaw { get; set; } = true;
@@ -75,18 +87,30 @@ public partial class OrientationLimitController : Universal3DPhysicsController
 
     [Export] public OrientationAnchorMode AnchorMode { get; set; } = OrientationAnchorMode.Preset;
 
-    /// <summary>Узел, чья ориентация служит якорем. Используется при AnchorMode = AnchorTarget.</summary>
+    /// <summary>
+    /// Узел, чья ориентация служит якорем. Используется при AnchorMode = AnchorTarget.
+    /// </summary>
     [Export] public Node3D? AnchorTarget { get; set; }
 
-    /// <summary>Чей RotationOrder определяет порядок Euler-разложения.</summary>
+    /// <summary>
+    /// Чей RotationOrder определяет порядок Euler-разложения.
+    /// </summary>
     [Export] public OrientationOrderSource OrderSource { get; set; } = OrientationOrderSource.Target;
 
     private Vector3 _presetRotationDegrees = Vector3.Zero;
     private Quaternion _preset = Quaternion.Identity;
 
-    /// <summary>Предустановленный якорь в базисе родителя (как RotationDegrees в инспекторе, Euler YXZ). Используется при AnchorMode = Preset.</summary>
-    [Export]
-    public Vector3 PresetRotationDegrees
+    /// <summary>
+    /// Предустановленный якорь в базисе родителя (как RotationDegrees в инспекторе, Euler YXZ).
+    /// Используется при AnchorMode = Preset.
+    /// 
+    /// <para>
+    /// У некоторых моделей при импорте мировая ось Z по соглашению импортирования приходит не так, как ожидает Godot.
+    /// Поэтому часть моделей может быть неправильно повернутой относительно объекта основания. Решить эту проблему можно
+    /// через эту настройку: выставите <see cref="PresetRotationDegrees.Y"/> на (0f, -180f, 0f)
+    /// </para>
+    /// </summary>
+    [Export] public Vector3 PresetRotationDegrees
     {
         get => _presetRotationDegrees;
         set
@@ -101,13 +125,19 @@ public partial class OrientationLimitController : Universal3DPhysicsController
     private Vector2 _rollLimit = new(-180f, 180f);
     private Vector2 _hardLimit = new(-30f, 30f);
 
-    /// <summary>Min/max yaw (вокруг Y) от якоря, градусы.</summary>
+    /// <summary>
+    /// Min/max yaw (вокруг Y) от якоря, градусы.
+    /// </summary>
     [Export] public Vector2 YawLimit { get => _yawLimit; set => _yawLimit = ClampRange(value, 180f); }
 
-    /// <summary>Min/max pitch (вокруг X) от якоря, градусы.</summary>
+    /// <summary>
+    /// Min/max pitch (вокруг X) от якоря, градусы.
+    /// </summary>
     [Export] public Vector2 PitchLimit { get => _pitchLimit; set => _pitchLimit = ClampRange(value, 180f); }
 
-    /// <summary>Min/max roll (вокруг Z) от якоря, градусы.</summary>
+    /// <summary>
+    /// Min/max roll (вокруг Z) от якоря, градусы.
+    /// </summary>
     [Export] public Vector2 RollLimit { get => _rollLimit; set => _rollLimit = ClampRange(value, 180f); }
 
     /// <summary>
@@ -120,7 +150,7 @@ public partial class OrientationLimitController : Universal3DPhysicsController
     {
         base._PhysicsProcess(delta);
 
-        if (!Enabled || !IsInstanceValid(Target) || !TryGetAnchor(Target!, out Quaternion anchor))
+        if (!Enabled || (Target?.IsActive() ?? false) == false || !TryGetAnchor(Target!, out Quaternion anchor))
         {
             Active = false;
             return;
@@ -131,7 +161,6 @@ public partial class OrientationLimitController : Universal3DPhysicsController
         EulerOrder order = ResolveOrder(Target!);
         int middle = GetMiddleAxis(order);
 
-        // Отклонение от якоря: X = pitch, Y = yaw, Z = roll (градусы).
         Quaternion deviation = (anchor.Inverse() * Target!.Quaternion).Normalized();
         Vector3 euler = new Basis(deviation).GetEuler(order) * Rad2Deg;
 
@@ -141,15 +170,15 @@ public partial class OrientationLimitController : Universal3DPhysicsController
             LimitAxis(euler.Z, LimitRoll, _rollLimit, RollCalculator, middle == 2, delta)
         );
 
-        // Ничего не изменилось: Target не трогаем.
-        if ((limited - euler).LengthSquared() < WriteEpsilonDeg * WriteEpsilonDeg)
-            return;
+        if ((limited - euler).LengthSquared() < WriteEpsilonDeg * WriteEpsilonDeg) return;
 
         Quaternion limitedDeviation = new(Basis.FromEuler(limited * Deg2Rad, order));
         Target.Quaternion = (anchor * limitedDeviation).Normalized();
     }
 
-    /// <summary>Порядок разложения: RotationOrder Target или узла-якоря (см. <see cref="OrientationOrderSource"/>).</summary>
+    /// <summary>
+    /// Порядок разложения: RotationOrder Target или узла-якоря (см. <see cref="OrientationOrderSource"/>).
+    /// </summary>
     private EulerOrder ResolveOrder(Node3D target)
     {
         if (OrderSource == OrientationOrderSource.AnchorTarget
@@ -162,7 +191,9 @@ public partial class OrientationLimitController : Universal3DPhysicsController
         return target.RotationOrder;
     }
 
-    /// <summary>Индекс средней оси порядка: 0 = X (pitch), 1 = Y (yaw), 2 = Z (roll).</summary>
+    /// <summary>
+    /// Индекс средней оси порядка: 0 = X (pitch), 1 = Y (yaw), 2 = Z (roll).
+    /// </summary>
     private static int GetMiddleAxis(EulerOrder order) => order switch
     {
         EulerOrder.Xyz or EulerOrder.Zyx => 1,
@@ -182,7 +213,7 @@ public partial class OrientationLimitController : Universal3DPhysicsController
             return true;
         }
 
-        if (!IsInstanceValid(AnchorTarget))
+        if (AnchorTarget?.IsActive() ?? false)
         {
             anchor = Quaternion.Identity;
             return false;

@@ -20,14 +20,14 @@ namespace ColdNight.src.game.physics;
 [GlobalClass, Icon("res://addons/at-icons/node3d/stop_sign.svg")]public partial class DamperController : Universal3DPhysicsController, ICalculatedP
 {
 
-    [Export]
-    public PCalculator Calculator { get; set; } = new();
+    [Export] public PCalculator Calculator { get; set; } = new();
 
     /// <summary>
     /// Минимальная скорость, при которой демпфер обновляет направление.
+    /// Демпферы предназначенные для решения проблемы с проблемой остаточного ускорения
+    /// должны выставляться с 0f.
     /// </summary>
-    [Export]
-    public float MinSpeed { get; set; } = 0.01f;
+    [Export] public float MinSpeed { get; set; } = 1f;
 
     /// <summary>
     /// Для демпфера целевая скорость всегда равна нулю.
@@ -38,14 +38,14 @@ namespace ColdNight.src.game.physics;
     {
         get
         {
-            if (Target is null || !Target.HasMeta(VelocityMetadata))
+            if ((Target?.IsActive() ?? false) == false || !Target.HasMeta(VelocityMetadata))
                 return Vector3.Zero;
 
             return (Vector3)Target.GetMeta(VelocityMetadata);
         }
         set
         {
-            if (Target is not null)
+            if (Target?.IsActive() ?? false)
                 Target.SetMeta(VelocityMetadata, value);
         }
     }
@@ -54,17 +54,13 @@ namespace ColdNight.src.game.physics;
     {
         base._PhysicsProcess(delta);
 
-        if (!Enabled ||
-            Target is null ||
-            !IsInstanceValid(Target) ||
-            !Target.IsInsideTree())
+        if (!Enabled || (Target?.IsActive() ?? false) == false )
         {
             Active = false;
             return;
         }
 
         var velocity = Velocity;
-
         if (velocity.LengthSquared() <= MinSpeed * MinSpeed)
         {
             Active = false;
@@ -75,19 +71,10 @@ namespace ColdNight.src.game.physics;
 
         var direction = velocity.Normalized();
         var currentSpeed = velocity.Dot(direction);
+        var force = direction * Calculator.CalculateForce(TargetSpeed, currentSpeed, delta);
 
-        var force = direction *
-            Calculator.CalculateForce(
-                TargetSpeed,
-                currentSpeed,
-                delta
-            );
-
-        if (force.LengthSquared() > MaxForce * MaxForce)
-            force = force.Normalized() * MaxForce;
-
-        if (Inverse)
-            force = -force;
+        if (force.LengthSquared() > MaxForce * MaxForce) force = force.Normalized() * MaxForce;
+        if (Inverse) force = -force;
 
         Velocity = velocity + force * (float)delta;
     }

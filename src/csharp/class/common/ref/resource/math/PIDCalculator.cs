@@ -18,19 +18,20 @@ namespace ColdNight.src.common;
     public static PIDCalculator Instance { get; } = new();
     private float integral = 0f;
     private float previousError = 0f;
+    private bool primed = false;
+
+    public override void Reset() { integral = 0f; previousError = 0f; primed = false; }
 
     public override float CalculateForce(float target, float current, double delta)
     {
         var fdelta = (float)delta;
         float error = target - current;
-        float derivative = (error - previousError) / fdelta;
+        float derivative = primed ? (error - previousError) / fdelta : 0f;
 
         integral += error * fdelta;
         previousError = error;
+        primed = true;
 
-        return
-            Coefficients.X * error +
-            Coefficients.Y * integral +
-            Coefficients.Z * derivative;
+        return Coefficients.X * error + Coefficients.Y * integral + Coefficients.Z * derivative;
     }
 }

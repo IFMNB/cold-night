@@ -4,7 +4,7 @@ using Godot;
 /// <summary>
 /// Линейка физических контроллеров, работающая только с RigidBody3D объектами
 /// </summary>
-[GlobalClass, Icon("res://addons/at-icons/node3d/globe.svg")] public abstract partial class RigidBody3DPhysicsController : PhysicsController
+[GlobalClass, Icon("res://addons/at-icons/node3d/globe.svg")] public abstract partial class PhysicsControllerRB3D : PhysicsController
 {
     /// <summary>
     /// У этого вида контроллеров цель может быть только <see cref="RigidBody3D"/>, потому что они
