@@ -16,7 +16,7 @@ public enum UprightAnchorMode
 /// Применяет момент по кратчайшему повороту, поэтому вращение вокруг самого Up (yaw) не затрагивается.
 /// <see cref="PhysicsController.MaxForce"/> здесь ограничивает модуль момента.
 /// </summary>
-[GlobalClass, Icon("res://addons/at-icons/node/arrow_up_to_line.svg")] public partial class UprightControllerRB3D : PhysicsControllerRB3D
+[GlobalClass, Icon("res://addons/at-icons/node3d/arrow_up_to_line.svg")] public partial class UprightControllerRB3D : PhysicsControllerRB3D
 {
     [ExportGroup("Anchor")]
     [Export] public UprightAnchorMode Mode { get; set; } = UprightAnchorMode.Preset;

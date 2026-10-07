@@ -6,21 +6,20 @@
 [ext_resource type="Script" uid="uid://c7jxd25g1atam" path="res://src/csharp/class/common/node/Wire.cs" id="7_qoait"]
 [ext_resource type="Script" uid="uid://cc14wxud4miuk" path="res://src/csharp/class/game/physics/controller/universal/OrientationController.cs" id="8_d7xyu"]
 [ext_resource type="PackedScene" uid="uid://curfi2ejy4nxl" path="res://models/maps/Complex.blend" id="8_pfvji"]
+[ext_resource type="Script" uid="uid://cm63ce5s7byp5" path="res://src/csharp/class/game/character/movement/MoveControllerCB3D.cs" id="8_qoait"]
 [ext_resource type="PackedScene" uid="uid://dvuh2xcis8iv6" path="res://scenes/interface/dev_info_control.tscn" id="8_s8x0k"]
-[ext_resource type="Script" uid="uid://bymd4n7lw7wac" path="res://src/csharp/class/game/physics/controller/universal/OrientationLimitController.cs" id="9_aniyf"]
+[ext_resource type="Script" uid="uid://d2x3ayqvg6a2d" path="res://src/csharp/class/game/physics/controller/universal/orientation/OrientationLimitController.cs" id="11_68c1y"]
 [ext_resource type="Script" uid="uid://ntwod3aqoo3c" path="res://src/csharp/class/common/node/inputs/InputPointerMotion.cs" id="11_qoait"]
-[ext_resource type="Script" uid="uid://8ff3heuw3ufw" path="res://src/csharp/class/game/physics/controller/universal/DamperController.cs" id="13_h7nkx"]
-[ext_resource type="Script" uid="uid://cmtmmbtv5vidh" path="res://src/csharp/class/game/physics/controller/proprietary/RigidBody3D/RigidBody3DHeightController.cs" id="13_xq2a7"]
 [ext_resource type="Script" uid="uid://dqpbqprq6guig" path="res://src/csharp/class/common/node/Folder.cs" id="14_1pqxs"]
-[ext_resource type="Script" uid="uid://cejvysce110bg" path="res://src/csharp/class/game/physics/controller/proprietary/RigidBody3D/RigidBody3DMoveController.cs" id="14_68c1y"]
 [ext_resource type="PackedScene" uid="uid://b1ktkqq8vid3d" path="res://models/template/swat/SWAT+Operator+CGTrader.blend" id="14_xq2a7"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sdqq3"]
 diffuse_mode = 1
 albedo_color = Color(0.70095825, 0.6165139, 0.56714314, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_sdqq3"]
-size = Vector3(0.49414063, 1.0351563, 0.21728516)
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sdqq3"]
+radius = 0.23876953
+height = 1.0009766
 
 [node name="Node3D" type="Node3D" unique_id=124636810]
 script = ExtResource("1_8t18l")
@@ -65,152 +64,148 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.975707, 10.567865, -2.242
 
 [node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=882042587]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=687751227]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.021635175, 1.2519584, 0.012946457)
-shape = SubResource("BoxShape3D_sdqq3")
+[node name="Node3D" type="Node3D" parent="RigidBody3D" unique_id=1025948657]
 
-[node name="Inputs" type="Node" parent="RigidBody3D" unique_id=1232815217]
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="." unique_id=989850735]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.016422197, 4.922174, 0.7616998)
+polygon = PackedVector2Array(0, 0, 0, 1, 0.97691554, 1.510406, 2.1153996, -0.11728382)
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=1262813720]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3000001, 0)
+
+[node name="Model" parent="CharacterBody3D" unique_id=2078975433 instance=ExtResource("14_xq2a7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.3000001, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D" unique_id=353379137]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5064639, 0.5340525, 0.62422687)
+fov = 91.87386
+
+[node name="Interface" type="Node" parent="CharacterBody3D/Camera3D" unique_id=134892359]
 script = ExtResource("14_1pqxs")
 metadata/_custom_type_script = "uid://dqpbqprq6guig"
 
-[node name="forward" type="Node" parent="RigidBody3D/Inputs" unique_id=1235875865]
+[node name="DevInfoControl" parent="CharacterBody3D/Camera3D/Interface" unique_id=1519950161 instance=ExtResource("8_s8x0k")]
+
+[node name="OrientationController" type="Node" parent="CharacterBody3D/Camera3D" unique_id=316575484 node_paths=PackedStringArray("Input", "Target")]
+script = ExtResource("8_d7xyu")
+Input = NodePath("../../Control/OrientationMotionWire")
+IgnoreZ = true
+Target = NodePath("..")
+metadata/_custom_type_script = "uid://cc14wxud4miuk"
+
+[node name="OrientationLimitController" type="Node" parent="CharacterBody3D/Camera3D" unique_id=1096745261 node_paths=PackedStringArray("AnchorTarget", "Target")]
+script = ExtResource("11_68c1y")
+YawLimit = Vector2(-30, 30)
+PitchLimit = Vector2(-30, 30)
+AnchorMode = 1
+AnchorTarget = NodePath("../..")
+Target = NodePath("..")
+metadata/_custom_type_script = "uid://d2x3ayqvg6a2d"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=687751227]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.003753662)
+shape = SubResource("CapsuleShape3D_sdqq3")
+
+[node name="MoveControllerCB3D" type="Node" parent="CharacterBody3D" unique_id=585153135 node_paths=PackedStringArray("Target", "DirectionInput")]
+script = ExtResource("8_qoait")
+Target = NodePath("..")
+MaxSpeed = 10.0
+DirectionInput = NodePath("../Control/MoveDirectionWire")
+metadata/_custom_type_script = "uid://cm63ce5s7byp5"
+
+[node name="OrientationController" type="Node" parent="CharacterBody3D" unique_id=1694419481 node_paths=PackedStringArray("Input", "Target")]
+script = ExtResource("8_d7xyu")
+Input = NodePath("../Control/OrientationMotionWire")
+IgnoreX = true
+IgnoreZ = true
+Target = NodePath("..")
+metadata/_custom_type_script = "uid://cc14wxud4miuk"
+
+[node name="Inputs" type="Node" parent="CharacterBody3D" unique_id=1232815217]
+script = ExtResource("14_1pqxs")
+metadata/_custom_type_script = "uid://dqpbqprq6guig"
+
+[node name="forward" type="Node" parent="CharacterBody3D/Inputs" unique_id=1235875865]
 script = ExtResource("4_qoait")
-Direction = Vector3(0, 0, 1)
+Direction = Vector3(0, 0, -1)
 Actions = Array[String](["move_forward"])
 metadata/_custom_type_script = "uid://dlni7ytax8mxn"
 
-[node name="left" type="Node" parent="RigidBody3D/Inputs" unique_id=2079513253]
+[node name="left" type="Node" parent="CharacterBody3D/Inputs" unique_id=2079513253]
 script = ExtResource("4_qoait")
-Direction = Vector3(1, 0, 0)
+Direction = Vector3(-1, 0, 0)
 Actions = Array[String](["move_left"])
 metadata/_custom_type_script = "uid://dlni7ytax8mxn"
 
-[node name="right" type="Node" parent="RigidBody3D/Inputs" unique_id=1211282699]
+[node name="right" type="Node" parent="CharacterBody3D/Inputs" unique_id=1211282699]
 script = ExtResource("4_qoait")
-Direction = Vector3(-1, 0, 0)
+Direction = Vector3(1, 0, 0)
 Actions = Array[String](["move_right"])
 metadata/_custom_type_script = "uid://dlni7ytax8mxn"
 
-[node name="back" type="Node" parent="RigidBody3D/Inputs" unique_id=1167476845]
+[node name="back" type="Node" parent="CharacterBody3D/Inputs" unique_id=1167476845]
 script = ExtResource("4_qoait")
-Direction = Vector3(0, 0, -1)
+Direction = Vector3(0, 0, 1)
 Actions = Array[String](["move_back"])
 metadata/_custom_type_script = "uid://dlni7ytax8mxn"
 
-[node name="space" type="Node" parent="RigidBody3D/Inputs" unique_id=2014116601]
+[node name="space" type="Node" parent="CharacterBody3D/Inputs" unique_id=2014116601]
 script = ExtResource("4_qoait")
 Actions = Array[String](["move_space"])
 metadata/_custom_type_script = "uid://dlni7ytax8mxn"
 
-[node name="alt" type="Node" parent="RigidBody3D/Inputs" unique_id=2058067080]
+[node name="alt" type="Node" parent="CharacterBody3D/Inputs" unique_id=2058067080]
 script = ExtResource("4_qoait")
 Actions = Array[String](["move_alt"])
 metadata/_custom_type_script = "uid://dlni7ytax8mxn"
 
-[node name="ctrl" type="Node" parent="RigidBody3D/Inputs" unique_id=1305878017]
+[node name="ctrl" type="Node" parent="CharacterBody3D/Inputs" unique_id=1305878017]
 script = ExtResource("4_qoait")
 Actions = Array[String](["move_ctrl"])
 metadata/_custom_type_script = "uid://dlni7ytax8mxn"
 
-[node name="shift" type="Node" parent="RigidBody3D/Inputs" unique_id=726290601]
+[node name="shift" type="Node" parent="CharacterBody3D/Inputs" unique_id=726290601]
 script = ExtResource("4_qoait")
 Actions = Array[String](["move_shift"])
 metadata/_custom_type_script = "uid://dlni7ytax8mxn"
 
-[node name="InputPointerMotion" type="Node" parent="RigidBody3D/Inputs" unique_id=807205004 node_paths=PackedStringArray("Delta3Output")]
+[node name="InputPointerMotion" type="Node" parent="CharacterBody3D/Inputs" unique_id=807205004 node_paths=PackedStringArray("Delta3Output")]
 script = ExtResource("11_qoait")
 Delta3Output = NodePath("WireMotion")
 metadata/_custom_type_script = "uid://ntwod3aqoo3c"
 
-[node name="WireMotion" type="Node" parent="RigidBody3D/Inputs/InputPointerMotion" unique_id=914714780 node_paths=PackedStringArray("Receivers")]
+[node name="WireMotion" type="Node" parent="CharacterBody3D/Inputs/InputPointerMotion" unique_id=914714780 node_paths=PackedStringArray("Receivers")]
 script = ExtResource("7_qoait")
 Receivers = [NodePath("../../../Control/OrientationMotionWire")]
 DefaultReceive = [Vector3(0, 0, 0)]
 DefaultEmit = [Vector3(0, 0, 0)]
 metadata/_custom_type_script = "uid://c7jxd25g1atam"
 
-[node name="InputMapDirection" type="Node" parent="RigidBody3D/Inputs" unique_id=129609788 node_paths=PackedStringArray("Output", "Bindings")]
+[node name="InputMapDirection" type="Node" parent="CharacterBody3D/Inputs" unique_id=129609788 node_paths=PackedStringArray("Output", "Bindings")]
 script = ExtResource("6_xq2a7")
 Output = NodePath("WireDirection")
 Bindings = [NodePath("../forward"), NodePath("../left"), NodePath("../right"), NodePath("../back")]
 metadata/_custom_type_script = "uid://dvgkg0w3fkxvp"
 
-[node name="WireDirection" type="Node" parent="RigidBody3D/Inputs/InputMapDirection" unique_id=1966313118 node_paths=PackedStringArray("Receivers")]
+[node name="WireDirection" type="Node" parent="CharacterBody3D/Inputs/InputMapDirection" unique_id=1966313118 node_paths=PackedStringArray("Receivers")]
 script = ExtResource("7_qoait")
 Receivers = [NodePath("../../../Control/MoveDirectionWire")]
 DefaultReceive = [Vector3(0, 0, 0)]
 DefaultEmit = [Vector3(0, 0, 0)]
 metadata/_custom_type_script = "uid://c7jxd25g1atam"
 
-[node name="Control" type="Node" parent="RigidBody3D" unique_id=1610308643]
+[node name="Control" type="Node" parent="CharacterBody3D" unique_id=1610308643]
 script = ExtResource("14_1pqxs")
 metadata/_custom_type_script = "uid://dqpbqprq6guig"
 
-[node name="OrientationMotionWire" type="Node" parent="RigidBody3D/Control" unique_id=194589713]
+[node name="OrientationMotionWire" type="Node" parent="CharacterBody3D/Control" unique_id=194589713 node_paths=PackedStringArray("Receivers")]
 script = ExtResource("7_qoait")
 ReceiverMode = 4
+Receivers = [NodePath(".")]
 metadata/_custom_type_script = "uid://c7jxd25g1atam"
 
-[node name="MoveDirectionWire" type="Node" parent="RigidBody3D/Control" unique_id=699643882]
+[node name="MoveDirectionWire" type="Node" parent="CharacterBody3D/Control" unique_id=699643882 node_paths=PackedStringArray("Receivers")]
 script = ExtResource("7_qoait")
 ReceiverMode = 4
+Receivers = [NodePath(".")]
 metadata/_custom_type_script = "uid://c7jxd25g1atam"
-
-[node name="Model" parent="RigidBody3D" unique_id=2078975433 instance=ExtResource("14_xq2a7")]
-
-[node name="Camera3D" type="Camera3D" parent="RigidBody3D/Model" unique_id=353379137]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.46524048, 1.8340526, -0.54670864)
-fov = 91.87386
-
-[node name="Folder" type="Node" parent="RigidBody3D/Model/Camera3D" unique_id=2026900686]
-script = ExtResource("14_1pqxs")
-metadata/_custom_type_script = "uid://dqpbqprq6guig"
-
-[node name="Interface" type="Node" parent="RigidBody3D/Model/Camera3D" unique_id=134892359]
-script = ExtResource("14_1pqxs")
-metadata/_custom_type_script = "uid://dqpbqprq6guig"
-
-[node name="DevInfoControl" parent="RigidBody3D/Model/Camera3D/Interface" unique_id=1519950161 instance=ExtResource("8_s8x0k")]
-
-[node name="OrientationController" type="Node" parent="RigidBody3D/Model/Camera3D" unique_id=316575484 node_paths=PackedStringArray("Input", "Target")]
-script = ExtResource("8_d7xyu")
-Input = NodePath("../../../Control/OrientationMotionWire")
-IgnoreZ = true
-Target = NodePath("..")
-metadata/_custom_type_script = "uid://cc14wxud4miuk"
-
-[node name="OrientationLimitController" type="Node" parent="RigidBody3D/Model/Camera3D" unique_id=1101657811 node_paths=PackedStringArray("AnchorTarget", "Target")]
-script = ExtResource("9_aniyf")
-AnchorMode = 1
-AnchorTarget = NodePath("../../..")
-OrderSource = 1
-YawLimit = Vector2(-60, 60)
-PitchLimit = Vector2(-60, 60)
-HardLimit = Vector2(-20, 20)
-Target = NodePath("..")
-metadata/_custom_type_script = "uid://bymd4n7lw7wac"
-
-[node name="DamperController" type="Node" parent="RigidBody3D/Model/Camera3D" unique_id=8892611 node_paths=PackedStringArray("Target")]
-script = ExtResource("13_h7nkx")
-Target = NodePath("../..")
-metadata/_custom_type_script = "uid://8ff3heuw3ufw"
-
-[node name="OrientationController" type="Node" parent="RigidBody3D/Model" unique_id=753710756 node_paths=PackedStringArray("Input", "Target")]
-script = ExtResource("8_d7xyu")
-Input = NodePath("../../Control/OrientationMotionWire")
-IgnoreX = true
-Target = NodePath("../..")
-MaxForce = 2.0
-metadata/_custom_type_script = "uid://cc14wxud4miuk"
-
-[node name="RigidBody3DHeightController" type="Node" parent="RigidBody3D" unique_id=233538597 node_paths=PackedStringArray("Target")]
-script = ExtResource("13_xq2a7")
-Target = NodePath("..")
-MaxForce = 100.0
-metadata/_custom_type_script = "uid://cmtmmbtv5vidh"
-
-[node name="RigidBody3DMoveController" type="Node" parent="RigidBody3D" unique_id=392292056 node_paths=PackedStringArray("DirectionInput", "Target")]
-script = ExtResource("14_68c1y")
-DirectionInput = NodePath("../Control/MoveDirectionWire")
-Target = NodePath("..")
-metadata/_custom_type_script = "uid://cejvysce110bg"

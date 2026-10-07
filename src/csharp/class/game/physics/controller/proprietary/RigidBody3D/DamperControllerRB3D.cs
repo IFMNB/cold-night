@@ -1,38 +1,68 @@
+using ColdNight.src.common;
 using Godot;
 
 namespace ColdNight.src.game.physics;
 
 /// <summary>
-/// Контроллер, реализующий демпфирование линейного движения объекта. Частный случай
-/// самого <see cref="MovePController"/>. Основан на нем же.
-/// 
+/// Контроллер демпфирования линейной скорости <see cref="RigidBody3D"/>.
 /// <para>
-/// Контроллер автоматически использует текущую линейную скорость цели как направление
-/// воздействия и стремится уменьшить её проекцию до нулевой скорости. Управление
-/// контроллером предполагается через настройку <see cref="PDCalculator"/>, а именно коэффициентов
+/// Прикладывает центральную силу вдоль текущей линейной скорости цели (в глобальных координатах),
+/// стремясь свести её модуль к нулю. Сила считается через <see cref="PDCalculator"/>:
+/// целевая скорость 0, текущая — модуль скорости цели.
 /// </para>
 /// <para>
-/// В отличие от <see cref="MovePController"/>, направление не задаётся напрямую:
-/// оно определяется текущим значением <see cref="RigidBody3D.LinearVelocity"/> цели.
-/// При скорости ниже <see cref="MinSpeed"/> воздействие не обновляется.
+/// При скорости ниже <see cref="MinSpeed"/> воздействие не применяется, а состояние
+/// калькулятора сбрасывается.
 /// </para>
 /// </summary>
-[GlobalClass, Icon("res://addons/at-icons/node3d/stop_sign.svg")] public partial class DamperControllerRB3D : MoveControllerRB3D
+[GlobalClass, Icon("res://addons/at-icons/node3d/stop_sign.svg")]
+public partial class DamperControllerRB3D : PhysicsControllerRB3D, ICalculatedPD
 {
+    [Export] public PDCalculator Calculator { get; set; } = new();
+
     /// <summary>
-    /// Минимальная скорость цели, при которой демпфер обновляет направление воздействия.
-    /// 
-    /// Если длина линейной скорости цели меньше этого значения, текущее направление
-    /// демпфирования сохраняется.
+    /// Минимальная скорость цели, начиная с которой демпфер работает.
     /// </summary>
     [Export] public float MinSpeed { get; set; } = 0.01f;
-    protected override float TargetSpeed => 0f;
-    
+
+    private bool _wasApplying;
+
     public override void _PhysicsProcess(double delta)
     {
-        if (Target is RigidBody3D t && t!.IsInsideTree() && t.LinearVelocity.LengthSquared() > MinSpeed * MinSpeed)
-            Direction = t.LinearVelocity;
-        
         base._PhysicsProcess(delta);
+
+        if (!Enabled || Target is not { } target || !target.IsActive())
+        {
+            Stop();
+            return;
+        }
+
+        var velocity = target.LinearVelocity;
+        var speed = velocity.Length();
+
+        if (speed < MinSpeed)
+        {
+            Stop();
+            return;
+        }
+
+        var direction = velocity / speed;
+        var force = (direction * Calculator.CalculateForce(0f, speed, delta)).LimitLength(MaxForce);
+
+        target.ApplyCentralForce(Inverse ? -force : force);
+
+        Active = true;
+        _wasApplying = true;
+    }
+
+    private void Stop()
+    {
+        Active = false;
+
+        if (!_wasApplying)
+            return;
+
+        Calculator.Reset();
+        _wasApplying = false;
     }
 }

@@ -10,7 +10,7 @@ namespace ColdNight.src.common;
 /// <typeparam name="T">
 /// Любой объект, главное чтобы была реализация синглтона на уровне класса
 /// </typeparam>
-public interface ISingletone <T> where T : GodotObject?
+public interface ISingletone <T> where T : GodotObject
 {
     /// <summary>
     /// Экземпляр объекта на всю программу. Предпочтите его использование, если вам не

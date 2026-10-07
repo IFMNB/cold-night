@@ -7,6 +7,15 @@ public static class NodeExtension
 {
     public static bool IsActive (this Node node) => GodotObject.IsInstanceValid(node) && node.IsInsideTree();
 
+    public static T? GetFirstAncestor<T>(this Node node) where T : Node
+    {
+        for (Node? current = node.GetParent(); current != null; current = current.GetParent())
+            if (current is T ancestor)
+                return ancestor;
+
+        return null;
+    }
+
     public static List<Node> GetChildrenWithRid(this Node root)
     {
         var result = new List<Node>();
