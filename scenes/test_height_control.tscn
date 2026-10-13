@@ -21,6 +21,9 @@ albedo_color = Color(0.70095825, 0.6165139, 0.56714314, 1)
 radius = 0.23876953
 height = 1.0009766
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_sdqq3"]
+radius = 2.321
+
 [node name="Node3D" type="Node3D" unique_id=124636810]
 script = ExtResource("1_8t18l")
 
@@ -209,3 +212,9 @@ script = ExtResource("7_qoait")
 ReceiverMode = 4
 Receivers = [NodePath(".")]
 metadata/_custom_type_script = "uid://c7jxd25g1atam"
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1680380700]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=2094228081]
+shape = SubResource("SphereShape3D_sdqq3")
+debug_color = Color(0.94509804, 0, 0.6039216, 1)

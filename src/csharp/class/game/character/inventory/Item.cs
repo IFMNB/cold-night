@@ -6,11 +6,25 @@ namespace ColdNight.src.game.character.inventory;
 
 [GlobalClass, Icon("res://addons/at-icons/node/info.svg")] public abstract partial class Item : Resource
 {
-    [Export] public virtual string Name {get; private set;} = string.Empty;
-    [Export] public virtual string Description {get; private set;} = string.Empty;
-    [Export] public virtual PackedScene ModelScene { get; private set; } = null!;
+    /// <summary>
+    /// Специальный класс, предполагающий что предмета не существует. Его нельзя создать самостоятельно.
+    /// 
+    /// <para>
+    /// Для создания информации под другие предметы используется конструирование через редактор Godot.
+    /// </para>
+    /// </summary>
+    public partial class NullRef : Item, ISingletone<NullRef>
+    {
+        public static NullRef Instance {get; private set;} = new();
+    }
+
+
+    [Export] public string Name = string.Empty;
+    [Export] public string Description = string.Empty;
+    [Export] public PackedScene? ModelScene = null;
     [Export] public Godot.Collections.Array<string> Tags {get; private set;} = [];
-    [Export] public virtual uint Size {get; private set;}
+    [Export] public uint StackSize = 1;
+    [Export] public bool BothHands = false;
 
     public ItemStack GetStack (uint Count = 1)
     {
@@ -19,4 +33,6 @@ namespace ColdNight.src.game.character.inventory;
 
         return NewStack;
     }
+
+    [Export(PropertyHint.Range,"0, 999, 1")] public virtual float PickTime {get; set;}
 }

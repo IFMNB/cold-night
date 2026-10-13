@@ -120,22 +120,17 @@ public enum OrientationAnchorMode
         Target.Quaternion = (anchor * corrected).Normalized();
     }
 
-    private static bool Cancel(OrientationAnchorController node, out Quaternion anchor)
+   private static bool Cancel(OrientationAnchorController node, out Quaternion anchor)
     {
         anchor = default;
 
         if (!(node.Target?.IsActive() ?? false))
             return true;
 
-        if (!node.TryGetAnchor(node.Target, out Quaternion result))
-            return true;
-        else
-            anchor = result;
-
-        if (!(node.AnchorTarget?.IsActive() ?? false))
+        if (!node.TryGetAnchor(node.Target, out anchor))
             return true;
 
-        if (node.Target.IsAncestorOf(node.AnchorTarget))
+        if (node.AnchorMode == OrientationAnchorMode.AnchorTarget && node.Target.IsAncestorOf(node.AnchorTarget))
         {
             #if DEBUG
             GD.PushWarning("Cannot work with that AnchorTarget, because he is a child of Target");

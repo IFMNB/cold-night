@@ -4,7 +4,7 @@ namespace ColdNight.src.game.character.inventory;
 
 [GlobalClass, Icon("res://addons/at-icons/node/layers.svg")] public partial class ItemStack : Resource
 {
-    [Export] public Item Item {get; set;} = NullItem.Instance;
+    [Export] public Item Item {get; set;} = Item.NullRef.Instance;
     [Export] public uint Count {get; protected set;} = 0;
 
     public bool Pick (uint Count, out ItemStack PickedStack)
@@ -19,7 +19,7 @@ namespace ColdNight.src.game.character.inventory;
 
     public bool Put (uint Count, out uint Remains)
     {
-        uint Free = Item.Size > this.Count ? Item.Size - this.Count : 0;
+        uint Free = Item.StackSize > this.Count ? Item.StackSize - this.Count : 0;
         uint ToPut = System.Math.Min(Count, Free);
         this.Count += ToPut;
         Remains = Count - ToPut;

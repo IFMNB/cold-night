@@ -35,7 +35,7 @@ namespace ColdNight.src.game.character.inventory;
     public bool Add (Item Item, uint Count, out uint Remains)
     {
         Remains = Count;
-        if (Item == null || Item is NullItem || Count == 0) return false;
+        if (Item == null || Item is Item.NullRef || Count == 0) return false;
 
         foreach (ItemStack Stack in Items)
         {
@@ -66,7 +66,7 @@ namespace ColdNight.src.game.character.inventory;
     public bool Insert (int Index, Item Item, uint Count, out uint Remains)
     {
         Remains = Count;
-        if (Item == null || Item is NullItem || Count == 0) return false;
+        if (Item == null || Item is Item.NullRef || Count == 0) return false;
         if (Index < 0 || Index > Items.Count) return false;
 
         if (Index < Items.Count && Items[Index].Item == Item)

@@ -87,6 +87,38 @@ public static class NodeExtension
         }
     }
 
+    public static bool GetFirstChildOf <T>(this Node root, out T result) where T : Node
+    {
+        foreach (var child in root.GetChildren())
+            if (child is T that)
+            {
+                result = that;
+                return true;
+            }
+
+        result = default!;
+        return false;
+    }
+
+    public static bool GetFirstDescendantOf <T> (this Node root, out T result) where T : Node
+    {
+        foreach (var descendant in root.GetChildren())
+            if (descendant is T that)
+            {
+                result = that;
+                return true;
+            }
+            else
+                if (GetFirstDescendantOf<T>(descendant, out var recursive_result))
+                {
+                    result = recursive_result;
+                    return true;
+                }
+
+        result = default!; 
+        return false;
+    }
+
     public static IEnumerable<T> GetAllDescendants<T>(this Node root, bool descendIntoMatches = true, bool includeSelf = false) where T : Node
     {
         if (includeSelf && root is T self)
